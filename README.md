@@ -93,7 +93,7 @@ clusterCornerAxes(object = tmp_clean,
 
 
 
-# 设定输出顺序
+# 自定义输出顺序
 tmp$orig.ident <- factor(tmp$orig.ident,
                          levels = c("ST2", "ST1", "ST3", "ST4"))
 
