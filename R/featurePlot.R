@@ -101,7 +101,11 @@ featurePlot <- function(
     ncol <- ifelse(is.null(nrow), length(genes), ceiling(length(genes) / nrow))
   }
 
-  gene_mtx <- suppressWarnings(matrix(genes, nrow = nrow, ncol = ncol))
+  gene_mtx <- matrix(NA_character_, nrow = nrow, ncol = ncol)
+  len <- min(length(genes), nrow * ncol)
+  if (len > 0) {
+    gene_mtx[seq_len(len)] <- genes[seq_len(len)]
+  }
 
   # assign colors
   if (is.null(color)) {
@@ -114,19 +118,19 @@ featurePlot <- function(
   # 2_draw plot
   # ============================================================================
   if (rm.axis == FALSE) {
-    lab.shift <- unit(-2.5, "lines")
+    lab.shift <- grid::unit(-2.5, "lines")
   } else {
-    lab.shift <- unit(-1, "lines")
+    lab.shift <- grid::unit(-1, "lines")
   }
 
   # CANVAS FOR PLOT
-  grid.newpage()
-  pushViewport(
-    viewport(
+  grid::grid.newpage()
+  grid::pushViewport(
+    grid::viewport(
       x = 0.5, y = 0.5,
       width = 0.9, height = 0.9,
       xscale = range(mer[, 1]), yscale = range(mer[, 2]),
-      layout = grid.layout(nrow = nrow, ncol = ncol, respect = respect)
+      layout = grid::grid.layout(nrow = nrow, ncol = ncol, respect = respect)
     )
   )
 
@@ -140,12 +144,13 @@ featurePlot <- function(
 
       # ===========================================================
       # 1_panel grid
-      pushViewport(
-        viewport(layout.pos.row = i, layout.pos.col = j)
+      grid::pushViewport(
+        grid::viewport(layout.pos.row = i, layout.pos.col = j)
       )
+      if (is.na(gene_mtx[i, j])) { grid::popViewport(); next }
 
       if (add.rect == TRUE) {
-        grid.rect()
+        grid::grid.rect()
       }
 
       # process data
@@ -158,20 +163,16 @@ featurePlot <- function(
 
       tmp_data <- mer |>
         dplyr::arrange(tmp_col)
-      col_p <- colorRampPalette(cols)(100)
-      cut_range <- cut(tmp_data[, "tmp_col"], 100)
-
-      labs <- levels(cut_range)
-      names(labs) <- col_p
-
+      col_p <- grDevices::colorRampPalette(cols)(100)
+      cut_range <- cut(tmp_data[, "tmp_col"], breaks = 100, include.lowest = TRUE)
+      col_idx <- as.integer(cut_range)
       tmp_data <- tmp_data |>
-        dplyr::mutate(col_rg = as.character(cut_range)) |>
-        dplyr::mutate(col_f = ifelse(col_rg %in% labs, names(labs)[match(col_rg, labs)], "black"))
+        dplyr::mutate(col_f = col_p[col_idx])
 
       # ===========================================================
       # 2_scatter plot
-      pushViewport(
-        viewport(
+      grid::pushViewport(
+        grid::viewport(
           x = 0.5, y = 0.5, width = plot.size, height = plot.size,
           xscale = extendrange(range(tmp_data[, 1]), f = 0.05),
           yscale = extendrange(range(tmp_data[, 2]), f = 0.05)
@@ -182,58 +183,58 @@ featurePlot <- function(
       if (keep.oneCor == TRUE) {
         if (j == 1) {
           if (add.corArrow == TRUE) {
-            grid.segments(
+            grid::grid.segments(
               x0 = 0, x1 = arrow.len, y0 = 0, y1 = 0,
-              arrow = arrow(length = unit(2, "mm"), type = "closed"),
-              gp = gpar(fill = "black")
+              arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+              gp = grid::gpar(fill = "black")
             )
-            grid.text(
+            grid::grid.text(
               label = paste0(toupper(dim), " 1"), x = arrow.len / 2, y = -corLabel.dist,
-              gp = gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+              gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
             )
-            grid.segments(
+            grid::grid.segments(
               x0 = 0, x1 = 0, y0 = 0, y1 = arrow.len,
-              arrow = arrow(length = unit(2, "mm"), type = "closed"),
-              gp = gpar(fill = "black")
+              arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+              gp = grid::gpar(fill = "black")
             )
-            grid.text(
+            grid::grid.text(
               label = paste0(toupper(dim), " 2"),
               x = -corLabel.dist, y = arrow.len / 2, rot = 90,
-              gp = gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+              gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
             )
           } else {
-            grid.rect()
+            grid::grid.rect()
           }
         }
       } else {
         if (add.corArrow == TRUE) {
-          grid.segments(
+          grid::grid.segments(
             x0 = 0, x1 = arrow.len, y0 = 0, y1 = 0,
-            arrow = arrow(length = unit(2, "mm"), type = "closed"),
-            gp = gpar(fill = "black")
+            arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+            gp = grid::gpar(fill = "black")
           )
-          grid.text(
+          grid::grid.text(
             label = paste0(toupper(dim), " 1"), x = arrow.len / 2, y = -corLabel.dist,
-            gp = gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
           )
-          grid.segments(
+          grid::grid.segments(
             x0 = 0, x1 = 0, y0 = 0, y1 = arrow.len,
-            arrow = arrow(length = unit(2, "mm"), type = "closed"),
-            gp = gpar(fill = "black")
+            arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+            gp = grid::gpar(fill = "black")
           )
-          grid.text(
+          grid::grid.text(
             label = paste0(toupper(dim), " 2"),
             x = -corLabel.dist, y = arrow.len / 2, rot = 90,
-            gp = gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
           )
         } else {
-          grid.rect()
+          grid::grid.rect()
         }
       }
 
-      grid.points(
-        x = tmp_data[, 1], y = tmp_data[, 2], pch = 19, size = unit(point.size, "pt"),
-        gp = gpar(col = tmp_data$col_f)
+      grid::grid.points(
+        x = tmp_data[, 1], y = tmp_data[, 2], pch = 19, size = grid::unit(point.size, "pt"),
+        gp = grid::gpar(col = tmp_data$col_f)
       )
 
       # whether draw axis
@@ -248,16 +249,16 @@ featurePlot <- function(
 
       # add strip
       if (add.strip == TRUE) {
-        grid.rect(
+        grid::grid.rect(
           x = 0.5, y = 1, width = 1,
-          height = 0.15, gp = gpar(fill = "grey85"),
+          height = 0.15, gp = grid::gpar(fill = "grey85"),
           just = "bottom"
         )
       }
 
-      grid.text(
-        label = gene_mtx[i, j], x = 0.5, y = unit(1 + 0.15 / 2, "npc"),
-        gp = gpar(fontface = "bold.italic")
+      grid::grid.text(
+        label = gene_mtx[i, j], x = 0.5, y = grid::unit(1 + 0.15 / 2, "npc"),
+        gp = grid::gpar(fontface = "bold.italic")
       )
       if (add.corArrow == FALSE) {
         # axis labels
@@ -269,19 +270,19 @@ featurePlot <- function(
           axis.label.y <- paste0(toupper(dim), " dimension 2")
         }
 
-        grid.text(label = axis.label.x, x = 0.5, y = lab.shift)
-        grid.text(label = axis.label.y, x = lab.shift, y = 0.5, rot = 90)
+        grid::grid.text(label = axis.label.x, x = 0.5, y = lab.shift)
+        grid::grid.text(label = axis.label.y, x = lab.shift, y = 0.5, rot = 90)
       }
 
-      popViewport()
+      grid::popViewport()
 
       # ===========================================================
       # 3_draw legend
       if (rm.legend == FALSE) {
-        pushViewport(
-          viewport(
+        grid::pushViewport(
+          grid::viewport(
             x = 0.5 + plot.size / 2 + 0.01, y = 0.5,
-            width = 0.025, height = unit(plot.size, "npc"),
+            width = 0.025, height = grid::unit(plot.size, "npc"),
             just = "left",
             yscale = range(tmp_data[, gene_mtx[i, j]])
           )
@@ -301,9 +302,9 @@ featurePlot <- function(
           ticks.side = "right"
         )
 
-        popViewport()
+        grid::popViewport()
       }
-      popViewport()
+      grid::popViewport()
     }
   }
 }

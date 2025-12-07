@@ -33,6 +33,7 @@ drawLegend <- function(
   colnames(leg.data) <- c("cellType", "clusters")
 
   # reorder
+  leg.data$cellType <- factor(leg.data$cellType)
   leg.data <- leg.data[match(levels(leg.data$cellType), leg.data$cellType), ]
 
   # add xy position

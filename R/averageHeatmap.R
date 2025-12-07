@@ -20,7 +20,7 @@
 #' @param fontsize Heatmap gene name fontsize. Default is 10.
 #' @param column_names_rot Cluster name rotation. Default is 45.
 #' @param showRowNames whether to show rownames. Default is "TRUE".
-#' @param markGenes Provide your tartget genes to mark on the plot. Default is "NULL".
+#' @param markGenes Provide your target genes to mark on the plot. Default is "NULL".
 #' @param clusterAnnoName Whether to add clsuetr column annotation name. Default is "TRUE".
 #' @param width The heatmap body width. Default is "NULL".
 #' @param height The heatmap body height. Default is "NULL".
@@ -122,7 +122,10 @@ averageHeatmap <- function(
   #   replacement = " ", name1
   # )
 
-  colnames(mean_gene_exp) <- levels(Seurat::Idents(object))
+  group_names <- if (group.by == "ident") levels(Seurat::Idents(object)) else levels(as.factor(object@meta.data[[group.by]]))
+  if (!is.null(group_names) && length(group_names) == ncol(mean_gene_exp)) {
+    colnames(mean_gene_exp) <- group_names
+  }
 
   # Z-score
   htdf <- t(scale(t(mean_gene_exp), scale = TRUE, center = TRUE))
@@ -148,12 +151,10 @@ averageHeatmap <- function(
       luminosity = annoColType,
       transparency = annoColTypeAlpha
     )
-    print(c("Your cluster annotation color is:", anno_col))
   } else if (annoCol == TRUE) {
-    # give your own color vectors
     anno_col <- myanCol
   } else {
-    print("Give TRUE or FALSE paramters!")
+    stop("annoCol must be TRUE or FALSE")
   }
   names(anno_col) <- colnames(htdf)
 
@@ -175,6 +176,7 @@ averageHeatmap <- function(
 
     # get target gene index
     index <- match(annoGene, rowGene)
+    index <- index[!is.na(index)]
 
     # some genes annotation
     geneMark <- ComplexHeatmap::rowAnnotation(
@@ -223,10 +225,9 @@ averageHeatmap <- function(
     ComplexHeatmap::Heatmap(
       htdf,
       name = "Z-score",
-      cluster_columns = FALSE,
-      cluster_rows = FALSE,
+      cluster_columns = cluster_columns,
+      cluster_rows = cluster_rows,
       row_title = row_title,
-      # column_title = "Clusters",
       right_annotation = right_annotation,
       show_row_names = showRowNames,
       row_names_gp = grid::gpar(
@@ -239,8 +240,8 @@ averageHeatmap <- function(
       column_names_rot = column_names_rot,
       top_annotation = column_ha,
       col = col_fun,
-      width = ggplot2::unit(width, "cm"),
-      height = ggplot2::unit(height, "cm"),
+      width = grid::unit(width, "cm"),
+      height = grid::unit(height, "cm"),
       ...
     )
   }

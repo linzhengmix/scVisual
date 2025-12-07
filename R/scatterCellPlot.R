@@ -67,23 +67,23 @@ scatterCellPlot <- function(
   # 2_draw plot
   # ============================================================================
   if (rm.axis == FALSE) {
-    lab.shift <- unit(-2.5, "lines")
+    lab.shift <- grid::unit(-2.5, "lines")
   } else {
-    lab.shift <- unit(-1, "lines")
+    lab.shift <- grid::unit(-1, "lines")
   }
 
-  grid.newpage()
-  pushViewport(
-    viewport(
-      x = unit(0.1, "npc"), y = unit(0.5, "npc"),
-      width = unit(0.5, "npc"),
-      height = unit(0.7, "npc"),
+  grid::grid.newpage()
+  grid::pushViewport(
+    grid::viewport(
+      x = grid::unit(0.1, "npc"), y = grid::unit(0.5, "npc"),
+      width = grid::unit(0.5, "npc"),
+      height = grid::unit(0.7, "npc"),
       just = "left",
       xscale = grDevices::extendrange(range(pc12[, 1]), f = 0.05),
       yscale = grDevices::extendrange(range(pc12[, 2]), f = 0.05),
     )
   )
-  grid.rect()
+  grid::grid.rect()
   if (rm.axis == FALSE) {
     # grid.xaxis()
     # grid.yaxis()
@@ -107,50 +107,50 @@ scatterCellPlot <- function(
     #   dplyr::filter(idents == celltype[i])
     tmp <- pc12[which(pc12$idents %in% celltype[i]), ]
 
-    grid.points(
-      x = tmp[, 1], y = tmp[, 2], pch = 19, size = unit(point.size, "pt"),
-      gp = gpar(col = cols[i])
+    grid::grid.points(
+      x = tmp[, 1], y = tmp[, 2], pch = 19, size = grid::unit(point.size, "pt"),
+      gp = grid::gpar(col = cols[i])
     )
   }
 
   # arrow
   if (rm.axis == TRUE) {
-    grid.segments(
+    grid::grid.segments(
       x0 = 0.025, x1 = arrow.len, y0 = 0.05, y1 = 0.05,
-      arrow = arrow(length = unit(2, "mm"), type = "closed"),
-      gp = gpar(fill = "black")
+      arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+      gp = grid::gpar(fill = "black")
     )
-    grid.text(
+    grid::grid.text(
       label = paste0(toupper(dim), " 1"),
       x = (arrow.len + 0.025) / 2, y = 0.025,
-      gp = gpar(fontsize = 6, fontface = "bold.italic")
+      gp = grid::gpar(fontsize = 6, fontface = "bold.italic")
     )
-    grid.segments(
+    grid::grid.segments(
       x0 = 0.05, x1 = 0.05, y0 = 0.025, y1 = arrow.len,
-      arrow = arrow(length = unit(2, "mm"), type = "closed"),
-      gp = gpar(fill = "black")
+      arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+      gp = grid::gpar(fill = "black")
     )
-    grid.text(
+    grid::grid.text(
       label = paste0(toupper(dim), " 2"),
       x = 0.025, y = (arrow.len + 0.025) / 2, rot = 90,
-      gp = gpar(fontsize = 6, fontface = "bold.italic")
+      gp = grid::gpar(fontsize = 6, fontface = "bold.italic")
     )
   } else {
     # labs
-    grid.text(label = paste0(toupper(dim), " dimension 1"), x = 0.5, y = lab.shift)
-    grid.text(label = paste0(toupper(dim), " dimension 2"), x = lab.shift, y = 0.5, rot = 90)
+    grid::grid.text(label = paste0(toupper(dim), " dimension 1"), x = 0.5, y = lab.shift)
+    grid::grid.text(label = paste0(toupper(dim), " dimension 2"), x = lab.shift, y = 0.5, rot = 90)
   }
 
-  popViewport()
+  grid::popViewport()
 
   # ============================================================================
   # barplot
   if (isFALSE(rm.barplot)) {
-    pushViewport(
-      viewport(
-        x = unit(0.61, "npc"), y = unit(0.5, "npc"),
-        width = unit(bar.width, "npc"),
-        height = unit(0.7, "npc"),
+    grid::pushViewport(
+      grid::viewport(
+        x = grid::unit(0.61, "npc"), y = grid::unit(0.5, "npc"),
+        width = grid::unit(bar.width, "npc"),
+        height = grid::unit(0.7, "npc"),
         just = "left",
         yscale = c(0, nrow(cell_num) + 0.75),
         xscale = c(0, max(cell_num$n) + 0.1 * max(cell_num$n))
@@ -165,16 +165,16 @@ scatterCellPlot <- function(
         labels = as.character(c(0, max(cell_num$n)))
       )
     }
-    grid.rect(
+    grid::grid.rect(
       x = rep(0, nrow(cell_num)), y = seq_len(nrow(cell_num)),
-      width = cell_num$n, height = unit(0.08, "npc"),
+      width = cell_num$n, height = grid::unit(0.08, "npc"),
       just = "left",
-      gp = gpar(fill = cols, col = NA),
+      gp = grid::gpar(fill = cols, col = NA),
       default.units = "native"
     )
-    grid.rect(gp = gpar(fill = "transparent"))
-    grid.text(label = "Number of cells", x = 0.5, y = lab.shift)
-    popViewport()
+    grid::grid.rect(gp = grid::gpar(fill = "transparent"))
+    grid::grid.text(label = "Number of cells", x = 0.5, y = lab.shift)
+    grid::popViewport()
   }
 
   # ============================================================================
@@ -183,34 +183,34 @@ scatterCellPlot <- function(
     bar.width <- 0
   }
 
-  pushViewport(
-    viewport(
-      x = unit(0.61 + bar.width, "npc"), y = unit(0.5, "npc"),
-      width = unit(0.2, "npc"),
-      height = unit(0.7, "npc"),
+  grid::pushViewport(
+    grid::viewport(
+      x = grid::unit(0.61 + bar.width, "npc"), y = grid::unit(0.5, "npc"),
+      width = grid::unit(0.2, "npc"),
+      height = grid::unit(0.7, "npc"),
       just = "left",
       yscale = c(0, nrow(cell_num) + 0.75)
     )
   )
 
-  grid.points(
+  grid::grid.points(
     x = rep(0.1, nrow(cell_num)), y = seq_len(nrow(cell_num)), pch = 19,
-    gp = gpar(col = cols), size = unit(legend.psize, "char")
+    gp = grid::gpar(col = cols), size = grid::unit(legend.psize, "char")
   )
   if (!is.null(cell.id)) {
-    grid.text(
+    grid::grid.text(
       label = as.character(unlist(cell_num[, cell.id])),
       x = 0.1, y = seq_len(nrow(cell_num)),
       default.units = "native"
     )
   }
-  grid.text(
+  grid::grid.text(
     label = cell_num$idents,
     x = 0.2, y = seq_len(nrow(cell_num)),
     just = "left",
-    gp = gpar(fontsize = 10),
+    gp = grid::gpar(fontsize = 10),
     default.units = "native"
   )
   # grid.rect(gp = gpar(fill = "transparent"))
-  popViewport()
+  grid::popViewport()
 }

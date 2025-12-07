@@ -71,17 +71,13 @@ jjVolcano <- function(
   }
 
   # get background cols
-  purrr::map_df(unique(diff.marker$cluster), function(x) {
-    tmp <- diff.marker %>%
-      dplyr::filter(cluster == x)
-
-    new.tmp <- data.frame(
-      cluster = x,
-      min = min(tmp$avg_log2FC) - 0.2,
-      max = max(tmp$avg_log2FC) + 0.2
+  back.data <- diff.marker %>%
+    dplyr::group_by(cluster) %>%
+    dplyr::summarise(
+      min = min(avg_log2FC) - 0.2,
+      max = max(avg_log2FC) + 0.2,
+      .groups = "drop"
     )
-    return(new.tmp)
-  }) -> back.data
 
   # get top gene
   top.marker.tmp <- diff.marker %>%
@@ -150,9 +146,14 @@ jjVolcano <- function(
       ggplot2::scale_color_manual(values = c("sigDown" = aesCol[1], "sigUp" = aesCol[2]))
   } else if (col.type == "adjustP") {
     p2 <- p1 +
-      # add point
       ggplot2::geom_jitter(ggplot2::aes(color = type2), size = pSize) +
-      ggplot2::scale_color_manual(values = c(aesCol[2], aesCol[1]))
+      ggplot2::scale_color_manual(values = stats::setNames(
+        aesCol,
+        c(
+          paste("adjust Pvalue < ", adjustP.cutoff, sep = ""),
+          paste("adjust Pvalue >= ", adjustP.cutoff, sep = "")
+        )
+      ))
   }
 
   # theme details

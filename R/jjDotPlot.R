@@ -152,7 +152,9 @@ jjDotPlot <- function(
     point.legendTitle = "Fraction of cells \n in group (%)",
     ...) {
   # set assays
-  assay <- assay %||% Seurat::DefaultAssay(object = object)
+  if (is.null(assay)) {
+    assay <- Seurat::DefaultAssay(object = object)
+  }
   Seurat::DefaultAssay(object = object) <- assay
 
   # get gene expression
@@ -169,7 +171,7 @@ jjDotPlot <- function(
       slot = slot
     )
   } else {
-    print("Please supply  one option!")
+    stop("Please supply one of 'gene' or 'markerGene', not both")
   }
 
   # get cluster number or celltype
@@ -312,7 +314,7 @@ jjDotPlot <- function(
       title = bar.legendTitle,
       title.position = "top",
       title.hjust = 0.5,
-      barwidth = unit(bar.width, "cm"),
+      barwidth = grid::unit(bar.width, "cm"),
       frame.colour = "black",
       frame.linewidth = 0.8,
       ticks.colour = "black"
@@ -329,7 +331,7 @@ jjDotPlot <- function(
         color = "black",
         fill = "grey50"
       ),
-      keywidth = ggplot2::unit(size.width, "cm")
+      keywidth = grid::unit(size.width, "cm")
     )
   )
 
@@ -427,7 +429,7 @@ jjDotPlot <- function(
 
   # long to wide matrix
   plot.matrix <- data.plot.res %>%
-    reshape2::dcast(id ~ gene, value.var = "avg.exp.scaled")
+    tidyr::pivot_wider(names_from = gene, values_from = avg.exp.scaled, id_cols = id)
 
   rownames(plot.matrix) <- plot.matrix$id
   plot.matrix <- plot.matrix %>% dplyr::select(-id)

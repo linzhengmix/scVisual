@@ -1,17 +1,40 @@
 Package: scVisual
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Single-cell Visualization Toolkit
 Version: 0.1.0
 Authors@R: c(
     person(
-      "Jane", "Doe",
+      "Junjun", "Lao",
       email = "jane@example.com",
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+Description: Visualization utilities for Seurat-based single-cell analysis.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
+Imports:
+    Seurat,
+    ggplot2,
+    grid,
+    grDevices,
+    dplyr,
+    tidyr,
+    purrr,
+    scales,
+    ggrepel,
+    ggh4x,
+    ggdendro,
+    patchwork,
+    plyr,
+    circlize,
+    cowplot,
+    ggalluvial,
+    geomtextpath,
+    jjAnno,
+    jjPlot,
+    ggunchull,
+    ComplexHeatmap,
+    stats,
+    utils

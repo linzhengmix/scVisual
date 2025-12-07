@@ -72,8 +72,12 @@ tracksPlot <- function(
     dplyr::left_join(y = barcode_info, by = "barcode")
 
   # wide to long
-  df_long <- reshape2::melt(df, id.vars = c("cell", "barcode"))
-  colnames(df_long)[3:4] <- c("gene", "exp")
+  df_long <- tidyr::pivot_longer(
+    data = df,
+    cols = -dplyr::all_of(c("cell", "barcode")),
+    names_to = "gene",
+    values_to = "exp"
+  )
 
   # order
   if (!is.null(cell.order)) {
@@ -86,13 +90,11 @@ tracksPlot <- function(
 
   # whether add cluster
   if (is.data.frame(genes)) {
-    plyr::ldply(seq_along(markers), function(x) {
-      df_tmp <- df_long |>
-        dplyr::filter(gene == markers[x]) |>
-        dplyr::mutate(cluster = names(markers[x]))
-
-      return(df_tmp)
-    }) -> df_long
+    df_long <- df_long %>%
+      dplyr::left_join(
+        y = markers_tmp[, c("gene", "cluster")],
+        by = c("gene" = "gene")
+      )
   }
 
   # ============================================================================

@@ -46,7 +46,7 @@
 #' @return Return a ggplot object.
 #' @export
 #' @examples
-#' test <- system.file("extdata", "seuratTest.RDS", package = "scRNAtoolVis")
+#' test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 #'
 #' tmp <- readRDS(test)
 #'
@@ -181,7 +181,7 @@ clusterCornerAxes <- function(
   } else if (startsWith(reduction, "tsne")) {
     axs_label <- paste("t-SNE", 2:1, sep = "")
   } else {
-    print("Please give correct type(umap or tsne)!")
+    stop("Please give correct type (umap or tsne)!")
   }
 
   if (axes == "mul") {
@@ -232,7 +232,7 @@ clusterCornerAxes <- function(
     colnames(axes)[4] <- groupFacet
     colnames(label)[5] <- groupFacet
   } else {
-    print("Please give correct args(mul or one)!")
+    stop("Please give correct args (mul or one)!")
   }
 
   ######################################################
@@ -262,7 +262,7 @@ clusterCornerAxes <- function(
       ggplot2::aes(x = x1, y = y1, group = linegrou),
       color = lineTextcol,
       arrow = ggplot2::arrow(
-        length = ggplot2::unit(0.1, "inches"),
+        length = grid::unit(0.1, "inches"),
         ends = "last",
         type = arrowType
       )
@@ -328,7 +328,7 @@ clusterCornerAxes <- function(
   if (noSplit == TRUE) {
     p1 <- p0
   } else {
-    p1 <- p0 + ggplot2::facet_wrap(facets = groupFacet, nrow = nrow)
+    p1 <- p0 + ggplot2::facet_wrap(ggplot2::vars(.data[[groupFacet]]), nrow = nrow)
   }
 
   ######################################################

@@ -110,11 +110,11 @@ featureCornerAxes <- function(
   mer <- cbind(pc12, geneExp)
 
   # merge data
-  megredf <- reshape2::melt(
-    mer,
-    id.vars = colnames(pc12),
-    variable.name = "gene_name",
-    value.name = "scaledValue"
+  megredf <- tidyr::pivot_longer(
+    data = mer,
+    cols = -dplyr::all_of(colnames(pc12)),
+    names_to = "gene_name",
+    values_to = "scaledValue"
   )
 
   # data range
@@ -138,7 +138,7 @@ featureCornerAxes <- function(
   } else if (startsWith(reduction, "tsne")) {
     axs_label <- paste("t-SNE", 2:1, sep = "")
   } else {
-    print("Please give correct type(umap or tsne)!")
+    stop("Please give correct type (umap or tsne)!")
   }
 
   if (axes == "mul") {
@@ -195,7 +195,7 @@ featureCornerAxes <- function(
       colnames(label)[5] <- groupFacet
     }
   } else {
-    print("Please give correct args(mul or one)!")
+    stop("Please give correct args (mul or one)!")
   }
 
   ####################################
@@ -231,7 +231,7 @@ featureCornerAxes <- function(
       ggplot2::aes(x = x1, y = y1, group = linegrou),
       color = lineTextcol,
       arrow = ggplot2::arrow(
-        length = ggplot2::unit(0.1, "inches"),
+        length = grid::unit(0.1, "inches"),
         ends = "last",
         type = arrowType
       )
@@ -270,7 +270,7 @@ featureCornerAxes <- function(
       ggplot2::facet_wrap(facets = "gene_name", ncol = nLayout)
   } else {
     p1 <- pmain +
-      ggplot2::facet_grid(facets = c("gene_name", groupFacet))
+      ggplot2::facet_grid(rows = ggplot2::vars(gene_name), cols = ggplot2::vars(.data[[groupFacet]]))
   }
 
   ######################################
