@@ -1,6 +1,9 @@
 #' @name jjDotPlot
 #' @author Junjun Lao
 #' @title using dotplot to visualize gene expression
+#' @description Create a dot plot of average expression and percent expressing
+#' across clusters or groups, with optional dendrograms, split aesthetics,
+#' and annotation segments for cell types.
 #'
 #' @param object seurat object, default NULL.
 #' @param assay the assay to be selected, default NULL.
@@ -49,9 +52,7 @@
 #' @param gene.order supply your own gene orders, default NULL.
 #' @param cluster.order supply your own cluster number orders, default NULL.
 #'
-#' @import tidyverse
 #' @import ggdendro
-#' @import ggsci
 #' @import patchwork
 #' @import utils
 #'
@@ -60,7 +61,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' httest <- system.file("extdata", "htdata.RDS", package = "scRNAtoolVis")
+#' httest <- system.file("extdata", "htdata.RDS", package = "scVisual")
 #' pbmc <- readRDS(httest)
 #'
 #' # add groups

@@ -20,7 +20,6 @@
 #' scatterCellPlot(object = seurat_object)
 #' }
 #'
-#' @importFrom grid grid.newpage pushViewport popViewport viewport grid.rect grid.xaxis grid.yaxis grid.points grid.segments grid.text arrow gpar
 #'
 #' @export
 

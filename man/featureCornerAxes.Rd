@@ -58,7 +58,7 @@ Add corner axes on seurat UMAP/tSNE gene FeaturePlot function figures
 }
 \examples{
 
-test <- system.file("extdata", "seuratTest.RDS", package = "scRNAtoolVis")
+test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 
 tmp <- readRDS(test)
 

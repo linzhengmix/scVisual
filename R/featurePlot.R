@@ -43,8 +43,6 @@
 #' @import grDevices
 #' @import ggplot2
 #' @import Seurat
-#' @importFrom grid unit viewport pushViewport popViewport grid.rect grid.text
-#' grid.points arrow gpar grid.layout
 #' @importFrom stats quantile
 #'
 #' @export

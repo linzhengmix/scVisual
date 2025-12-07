@@ -23,7 +23,7 @@
 #' @export
 #'
 #' @examples
-#' test <- system.file("extdata", "pbmc.markers.csv", package = "scRNAtoolVis")
+#' test <- system.file("extdata", "pbmc.markers.csv", package = "scVisual")
 #' markers <- read.csv(test)
 #'
 #' markerVolcano(

@@ -35,6 +35,7 @@ This function creates a scatter cell plot using the grid package in R.
 scatterCellPlot(object = seurat_object)
 }
 
+
 }
 \author{
 Jun Zhang

@@ -11,7 +11,7 @@ library(scVisual)
 ```
 
 
-## example
+## Example
 
 ```R
 

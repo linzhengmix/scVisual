@@ -67,7 +67,7 @@ averageHeatmap(
 
 \item{row_names_side}{Heatmap gene name side. Default is "left".}
 
-\item{markGenes}{Provide your tartget genes to mark on the plot. Default is "NULL".}
+\item{markGenes}{Provide your target genes to mark on the plot. Default is "NULL".}
 
 \item{border}{Whether to shOw heatmap border. Default is "FALSE".}
 
@@ -96,11 +96,12 @@ Return a plot.
 Plot averaged gene expression cross cluster cells
 }
 \examples{
-httest <- system.file("extdata", "htdata.RDS", package = "scRNAtoolVis")
+\dontrun{
+httest <- system.file("extdata", "htdata.RDS", package = "scVisual")
 pbmc <- readRDS(httest)
 
 # load markergene
-markergene <- system.file("extdata", "top5pbmc.markers.csv", package = "scRNAtoolVis")
+markergene <- system.file("extdata", "top5pbmc.markers.csv", package = "scVisual")
 markers <- read.table(markergene, sep = ",", header = TRUE)
 
 # plot
@@ -115,6 +116,7 @@ averageHeatmap(
   markerGene = markers$gene,
   htCol = c("#339933", "#FFCC00", "#FF0033")
 )
+}
 
 }
 \author{

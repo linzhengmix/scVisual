@@ -98,11 +98,13 @@
 Return a ggplot object.
 }
 \description{
-using dotplot to visualize gene expression
+Create a dot plot of average expression and percent expressing
+across clusters or groups, with optional dendrograms, split aesthetics,
+and annotation segments for cell types.
 }
 \examples{
 \dontrun{
-httest <- system.file("extdata", "htdata.RDS", package = "scRNAtoolVis")
+httest <- system.file("extdata", "htdata.RDS", package = "scVisual")
 pbmc <- readRDS(httest)
 
 # add groups

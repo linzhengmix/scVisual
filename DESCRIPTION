@@ -21,13 +21,13 @@ Imports:
     grDevices,
     dplyr,
     tidyr,
+    magrittr,
     purrr,
     scales,
     ggrepel,
     ggh4x,
     ggdendro,
     patchwork,
-    plyr,
     circlize,
     cowplot,
     ggalluvial,
@@ -38,3 +38,5 @@ Imports:
     ComplexHeatmap,
     stats,
     utils
+Suggests:
+    ggsci
