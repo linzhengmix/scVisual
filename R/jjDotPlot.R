@@ -1,111 +1,26 @@
 #' @name jjDotPlot
 #' @author mixfruit
-#' @title using dotplot to visualize gene expression
-#' @description Create a dot plot of average expression and percent expressing
-#' across clusters or groups, with optional dendrograms, split aesthetics,
-#' and annotation segments for cell types.
+
+#' @title Dot Plot for Gene Expression Visualization
+#' @param object Seurat object containing the data.
+#' @param gene Genes to plot.
+#' @param markerGene Marker genes with cell type info.
+#' @param ... Additional parameters.
 #'
-#' @param object seurat object, default NULL.
-#' @param assay the assay to be selected, default NULL.
-#' @param slot gene expression data to be selected, default "data".
-#' @param id the cell clusters id in the metadata info, default "seurat_clusters".
-#' @param split.by the group name to split, default NULL.
-#' @param split.by.aesGroup whether the dot color filled by group, default FALSE.
-#' @param gene the genes to be drawn in plot, default NULL.
-#' @param markerGene the marker genes with celltype info to be drawn, default NULL.
-#' @param point.geom the ggplot "point" geom layer to be shown, default TRUE.
-#' @param point.shape the point shape,default 21.
-#' @param tile.geom the ggplot "tile" geom layer to be shown, default FALSE.
-#' @param dot.col dot colors, default "c("white","#990000")".
-#' @param midpoint the midpoint value when using rescale parameters, default 0.5.
-#' @param scale whether scale the gene expressions, default TRUE.
-#' @param col.min minimum scaled average expression threshold (everything smaller will be set to this), default -2.5.
-#' @param col.max maximum scaled average expression threshold (everything larger will be set to this), default 2.5.
-#' @param rescale whether rescale the average expression to specific range, default FALSE.
-#' @param rescale.min minimum rescaled average expression threshold, default 0.
-#' @param rescale.max maximum rescaled average expression threshold, default 1.
-#' @param dot.min the minimum size of dot point, default 1.
-#' @param dot.max the maximum size of dot point, default 6.
-#' @param base_size the theme base size, default 14.
-#' @param x.text.angle the x text angle, default 90.
-#' @param x.text.hjust the x text hjust, default 1
-#' @param x.text.vjust the x text vjust, default 0.
-#' @param ytree whether add the y axis dendrogram, default TRUE.
-#' @param xtree whether add the x axis dendrogram, default FALSE.
-#' @param tree.pos the dendrogram position to be placed, default NULL.
-#' @param same.pos.label whether place the x/y axis label on same side, default FALSE.
-#' @param size.width the point legend width, default 0.3.
-#' @param bar.width the colorbar legend width, default 4.5.
-#' @param plot.margin the plot margin, default c(1,1,1,1) which relative to c(t,r,b,l).
-#' @param anno whether anno celltype, default FALSE.
-#' @param aesGroName the markerGene data.frame column name which refers to celltype, default "cluster".
-#' @param segWidth annoSegment width, default 0.8.
-#' @param lwd annoSegment line size, default 3.
-#' @param textRot annoSegment text angle, default 90.
-#' @param textSize annoSegment text size, default 14.
-#' @param hjust annoSegment text hjust, default 0.
-#' @param legend.position ggplot legend position, default "right".
-#' @param bar.legendTitle colorbar legend title, default "Mean expression in group".
-#' @param point.legendTitle point size legend title, default "Fraction of cells in group (%)".
-#' @param ... other parameters passed to annoSegment function.
-#'
-#' @param gene.order supply your own gene orders, default NULL.
-#' @param cluster.order supply your own cluster number orders, default NULL.
-#'
-#' @import ggdendro
-#' @import patchwork
-#' @import utils
-#'
-#' @return Return a ggplot object.
+#' Create a dot plot of average expression and percent expressing
+#' across clusters or groups.
+#' @return A ggplot object.
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' httest <- system.file("extdata", "htdata.RDS", package = "scVisual")
-#' pbmc <- readRDS(httest)
-#'
-#' # add groups
-#' pbmc$groups <- rep(c("stim", "control"), each = 1319)
-#' # add celltype
-#' pbmc$celltype <- Seurat::Idents(pbmc)
-#'
-#' # load markergene
-#' markergene <- data("top3pbmc.markers")
-#'
-#' # ====================================
-#' jjDotPlot(
-#'   object = pbmc,
-#'   gene = top3pbmc.markers$gene
-#' )
-#'
-#' jjDotPlot(
-#'   object = pbmc,
-#'   gene = top3pbmc.markers$gene,
-#'   id = "celltype"
-#' )
-#'
-#' jjDotPlot(
-#'   object = pbmc,
-#'   markerGene = top3pbmc.markers
-#' )
-#'
-#' jjDotPlot(
-#'   object = pbmc,
-#'   markerGene = top3pbmc.markers,
-#'   xtree = TRUE
-#' )
-#'
-#' jjDotPlot(
-#'   object = pbmc,
-#'   markerGene = top3pbmc.markers,
-#'   anno = TRUE,
-#'   plot.margin = c(3, 1, 1, 1)
-#' )
-#' }
+
+
+# Define global variables
 globalVariables(c("%||%", ".", "avg.exp", "avg.exp.scaled", "celltype", "group", "pct.exp", "unit"))
+
+# Get PercentAbove function from Seurat
 PercentAbove <- utils::getFromNamespace("PercentAbove", "Seurat")
 
-# define function
+# Define the function
 jjDotPlot <- function(
     object = NULL,
     assay = NULL,
@@ -156,35 +71,35 @@ jjDotPlot <- function(
   if (is.null(object)) {
     stop("Please provide a valid Seurat object.")
   }
-  
+
   if (!inherits(object, "Seurat")) {
     stop("object must be a Seurat object.")
   }
-  
+
   if (is.null(gene) && is.null(markerGene)) {
     stop("Please provide either 'gene' or 'markerGene' parameter.")
   }
-  
+
   if (!is.null(gene) && !is.null(markerGene)) {
     stop("Please provide only one of 'gene' or 'markerGene' parameters, not both.")
   }
-  
+
   if (!is.null(assay) && !assay %in% Seurat::Assays(object)) {
     stop(paste0("Assay ", assay, " not found in the Seurat object."))
   }
-  
+
   if (!id %in% colnames(object@meta.data)) {
     stop(paste0("Column ", id, " not found in object metadata."))
   }
-  
+
   if (!is.null(split.by) && !split.by %in% colnames(object@meta.data)) {
     stop(paste0("Column ", split.by, " not found in object metadata."))
   }
-  
+
   if (anno == TRUE && is.null(markerGene)) {
     stop("Please provide 'markerGene' parameter when 'anno' is TRUE.")
   }
-  
+
   if (anno == TRUE && !aesGroName %in% colnames(markerGene)) {
     stop(paste0("Column ", aesGroName, " not found in markerGene data frame."))
   }
@@ -534,7 +449,6 @@ jjDotPlot <- function(
   }
   return(panno)
 }
-
 
 ###############################
 #' This is a test data for this package

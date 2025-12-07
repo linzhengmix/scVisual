@@ -25,5 +25,5 @@ a ggplot object.
 using cellRatioPlot to visualize cell percent ratio across clusters
 }
 \author{
-Junjun Lao
+mixfruit
 }

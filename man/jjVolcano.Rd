@@ -54,5 +54,5 @@ jjVolcano(diffData = pbmc.markers)
 }
 }
 \author{
-Junjun Lao
+mixfruit
 }

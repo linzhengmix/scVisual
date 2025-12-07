@@ -38,5 +38,5 @@ scatterCellPlot(object = seurat_object)
 
 }
 \author{
-Jun Zhang
+mixfruit
 }

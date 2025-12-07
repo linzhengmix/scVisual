@@ -16,6 +16,7 @@
 #' @return A ggplot object representing the track or heatmap plot.
 #'
 #' @export
+#' @importFrom utils modifyList
 
 globalVariables(c("barcode", "distinct"))
 

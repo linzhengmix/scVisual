@@ -67,5 +67,5 @@ featurePlot(object = seurat_obj, genes = c("gene1", "gene2", "gene3"), nrow = 2,
 
 }
 \author{
-Jun Zhang
+mixfruit
 }

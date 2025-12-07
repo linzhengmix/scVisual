@@ -27,5 +27,5 @@ combine plot
 using drawLegend to add cluster id in legend
 }
 \author{
-Junjun Lao
+mixfruit
 }

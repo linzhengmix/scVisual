@@ -120,5 +120,5 @@ averageHeatmap(
 
 }
 \author{
-Junjun Lao
+mixfruit
 }

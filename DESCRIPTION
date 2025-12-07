@@ -4,16 +4,18 @@ Title: Single-cell Visualization Toolkit
 Version: 0.1.0
 Authors@R: c(
     person(
-      "Junjun", "Lao",
-      email = "jane@example.com",
+      "Fruit", "Mix",
+      email = "mixfruit@gmail.com",
       role = c("aut", "cre")
     )
   )
 Description: Visualization utilities for Seurat-based single-cell analysis.
-License: MIT + file LICENSE
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
 Imports:
     Seurat,
     ggplot2,
@@ -22,12 +24,10 @@ Imports:
     dplyr,
     tidyr,
     magrittr,
-    purrr,
+    rlang,
     scales,
     ggrepel,
     ggh4x,
-    ggdendro,
-    patchwork,
     circlize,
     cowplot,
     ggalluvial,

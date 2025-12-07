@@ -117,8 +117,12 @@ featureCornerAxes <- function(
     values_to = "scaledValue"
   )
 
+  # get column names for reduction components
+  comp1 <- colnames(reduc)[1]
+  comp2 <- colnames(reduc)[2]
+
   # data range
-  range <- floor(min(min(pc12[, 1]), min(pc12[, 2])))
+  range <- floor(min(min(pc12[[comp1]]), min(pc12[[comp2]])))
 
   # get bottom-left coord
   lower <- range - relDist * abs(range)
@@ -212,7 +216,7 @@ featureCornerAxes <- function(
   # plot
   pmain <- ggplot2::ggplot(
     megredf,
-    ggplot2::aes(x = megredf[, 1], y = megredf[, 2])
+    ggplot2::aes(x = .data[[comp1]], y = .data[[comp2]])
   ) +
     ggplot2::geom_point(
       ggplot2::aes(color = scaledValue),

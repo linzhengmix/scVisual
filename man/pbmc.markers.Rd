@@ -16,6 +16,6 @@ This is a test data for this package
 test data description
 }
 \author{
-Junjun Lao
+mixfruit
 }
 \keyword{datasets}
