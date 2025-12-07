@@ -1,5 +1,5 @@
 #' @name averageHeatmap
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title Plot averaged gene expression cross cluster cells
 #'
 #' @param object object seurat object.
@@ -72,13 +72,13 @@ averageHeatmap <- function(
     annoColType = "light",
     annoColTypeAlpha = 0,
     row_title = "Cluster top Marker genes",
-    clusterAnnoName = TRUE,
-    showRowNames = TRUE,
     row_names_side = "left",
-    markGenes = NULL,
     border = FALSE,
     fontsize = 10,
     column_names_rot = 45,
+    showRowNames = TRUE,
+    markGenes = NULL,
+    clusterAnnoName = TRUE,
     width = NULL,
     height = NULL,
     cluster.order = NULL,
@@ -86,31 +86,52 @@ averageHeatmap <- function(
     cluster_rows = FALSE,
     gene.order = NULL,
     ...) {
-  # get cells mean gene expression
-  # check Seurat version first
-  if(utils::packageVersion("Seurat") > 4){
-    mean_gene_exp <- as.matrix(
-      data.frame(
-        Seurat::AverageExpression(object,
-                                  features = markerGene,
-                                  group.by = group.by,
-                                  assays = assays,
-                                  layer = slot
-        )
-      )
-    )
-  }else{
-    mean_gene_exp <- as.matrix(
-      data.frame(
-        Seurat::AverageExpression(object,
-                                  features = markerGene,
-                                  group.by = group.by,
-                                  assays = assays,
-                                  slot = slot
-        )
-      )
-    )
+  # Parameter validation
+  if (is.null(object)) {
+    stop("Please provide a valid Seurat object.")
   }
+  
+  if (is.null(markerGene)) {
+    stop("Please provide marker genes.")
+  }
+  
+  if (!inherits(object, "Seurat")) {
+    stop("object must be a Seurat object.")
+  }
+  
+  if (!assays %in% Seurat::Assays(object)) {
+    stop(paste0("Assay ", assays, " not found in the Seurat object."))
+  }
+  
+  if (!is.logical(annoCol)) {
+    stop("annoCol must be TRUE or FALSE.")
+  }
+  
+  if (annoCol == TRUE && is.null(myanCol)) {
+    stop("Please provide custom annotation colors when annoCol is TRUE.")
+  }
+  
+  if (!is.null(markGenes)) {
+    if (!is.character(markGenes)) {
+      stop("markGenes must be a character vector.")
+    }
+    # Check if markGenes are in markerGene
+    invalid_genes <- setdiff(markGenes, markerGene)
+    if (length(invalid_genes) > 0) {
+      warning(paste0("The following genes are not in markerGene: ", paste(invalid_genes, collapse = ", ")))
+      markGenes <- intersect(markGenes, markerGene)
+    }
+  }
+  # get cells mean gene expression
+  # check Seurat version and use appropriate parameter name
+  mean_gene_exp <- as.matrix(
+    data.frame(
+      do.call(Seurat::AverageExpression, c(
+        list(object = object, features = markerGene, group.by = group.by, assays = assays),
+        if (utils::packageVersion("Seurat") > 4) list(layer = slot) else list(slot = slot)
+      ))
+    )
+  )
 
   # add colnames
   # name1 <- gsub(

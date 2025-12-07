@@ -18,13 +18,13 @@ averageHeatmap(
   annoColType = "light",
   annoColTypeAlpha = 0,
   row_title = "Cluster top Marker genes",
-  clusterAnnoName = TRUE,
-  showRowNames = TRUE,
   row_names_side = "left",
-  markGenes = NULL,
   border = FALSE,
   fontsize = 10,
   column_names_rot = 45,
+  showRowNames = TRUE,
+  markGenes = NULL,
+  clusterAnnoName = TRUE,
   width = NULL,
   height = NULL,
   cluster.order = NULL,
@@ -61,19 +61,19 @@ averageHeatmap(
 
 \item{row_title}{Heatmap row title. Default is "Cluster top Marker genes".}
 
-\item{clusterAnnoName}{Whether to add clsuetr column annotation name. Default is "TRUE".}
-
-\item{showRowNames}{whether to show rownames. Default is "TRUE".}
-
 \item{row_names_side}{Heatmap gene name side. Default is "left".}
-
-\item{markGenes}{Provide your target genes to mark on the plot. Default is "NULL".}
 
 \item{border}{Whether to shOw heatmap border. Default is "FALSE".}
 
 \item{fontsize}{Heatmap gene name fontsize. Default is 10.}
 
 \item{column_names_rot}{Cluster name rotation. Default is 45.}
+
+\item{showRowNames}{whether to show rownames. Default is "TRUE".}
+
+\item{markGenes}{Provide your target genes to mark on the plot. Default is "NULL".}
+
+\item{clusterAnnoName}{Whether to add clsuetr column annotation name. Default is "TRUE".}
 
 \item{width}{The heatmap body width. Default is "NULL".}
 

@@ -1,5 +1,5 @@
 #' @name drawLegend
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title using drawLegend to add cluster id in legend
 #'
 #' @param object object seurat object, default NULL.

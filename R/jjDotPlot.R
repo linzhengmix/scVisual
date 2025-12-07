@@ -1,5 +1,5 @@
 #' @name jjDotPlot
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title using dotplot to visualize gene expression
 #' @description Create a dot plot of average expression and percent expressing
 #' across clusters or groups, with optional dendrograms, split aesthetics,
@@ -152,6 +152,42 @@ jjDotPlot <- function(
     bar.legendTitle = "Mean expression \n in group",
     point.legendTitle = "Fraction of cells \n in group (%)",
     ...) {
+  # Parameter validation
+  if (is.null(object)) {
+    stop("Please provide a valid Seurat object.")
+  }
+  
+  if (!inherits(object, "Seurat")) {
+    stop("object must be a Seurat object.")
+  }
+  
+  if (is.null(gene) && is.null(markerGene)) {
+    stop("Please provide either 'gene' or 'markerGene' parameter.")
+  }
+  
+  if (!is.null(gene) && !is.null(markerGene)) {
+    stop("Please provide only one of 'gene' or 'markerGene' parameters, not both.")
+  }
+  
+  if (!is.null(assay) && !assay %in% Seurat::Assays(object)) {
+    stop(paste0("Assay ", assay, " not found in the Seurat object."))
+  }
+  
+  if (!id %in% colnames(object@meta.data)) {
+    stop(paste0("Column ", id, " not found in object metadata."))
+  }
+  
+  if (!is.null(split.by) && !split.by %in% colnames(object@meta.data)) {
+    stop(paste0("Column ", split.by, " not found in object metadata."))
+  }
+  
+  if (anno == TRUE && is.null(markerGene)) {
+    stop("Please provide 'markerGene' parameter when 'anno' is TRUE.")
+  }
+  
+  if (anno == TRUE && !aesGroName %in% colnames(markerGene)) {
+    stop(paste0("Column ", aesGroName, " not found in markerGene data frame."))
+  }
   # set assays
   if (is.null(assay)) {
     assay <- Seurat::DefaultAssay(object = object)
@@ -200,67 +236,46 @@ jjDotPlot <- function(
   }
 
   # calculate mean expressions and percent expression
-  data.plot <- lapply(
-    X = unique(x = geneExp$id),
-    FUN = function(ident) {
-      data.use <- geneExp[geneExp$id == ident, 1:(ncol(x = geneExp) - 1), drop = FALSE]
-      avg.exp <- apply(
-        X = data.use,
-        MARGIN = 2,
-        FUN = function(x) {
-          return(mean(x = expm1(x = x)))
-        }
-      )
-      pct.exp <- apply(X = data.use, MARGIN = 2, FUN = PercentAbove, threshold = 0)
-
-      res <- data.frame(id = ident, avg.exp = avg.exp, pct.exp = pct.exp * 100)
-      res$gene <- rownames(res)
-      return(res)
-    }
-  ) %>%
-    do.call("rbind", .) %>%
-    data.frame()
+  data.plot <- geneExp %>%
+    tidyr::pivot_longer(
+      cols = -id,
+      names_to = "gene",
+      values_to = "expression"
+    ) %>%
+    dplyr::group_by(id, gene) %>%
+    dplyr::summarise(
+      avg.exp = mean(expm1(expression)),
+      pct.exp = (sum(expression > 0) / dplyr::n()) * 100
+    ) %>%
+    dplyr::ungroup()
 
   # scale mean expressions
   if (scale == TRUE) {
-    purrr::map_df(unique(data.plot$gene), function(x) {
-      tmp <- data.plot %>%
-        dplyr::filter(gene == x)
-
-      # scale value cross groups
-      if (rescale == TRUE) {
-        avg.exp.scale <- tmp %>%
-          dplyr::select(avg.exp) %>%
-          scale(.) %>%
-          scales::rescale(., to = c(rescale.min, rescale.max))
-      } else {
-        avg.exp.scale <- tmp %>%
-          dplyr::select(avg.exp) %>%
-          scale(.) %>%
-          Seurat::MinMax(., min = col.min, max = col.max)
-      }
-
-      # add scaled exp
-      tmp$avg.exp.scaled <- as.numeric(avg.exp.scale)
-      return(tmp)
-    }) -> data.plot
+    data.plot <- data.plot %>%
+      dplyr::group_by(gene) %>%
+      dplyr::mutate(
+        avg.exp.scaled = if (rescale == TRUE) {
+          scales::rescale(scale(avg.exp)[, 1], to = c(rescale.min, rescale.max))
+        } else {
+          Seurat::MinMax(scale(avg.exp)[, 1], min = col.min, max = col.max)
+        }
+      ) %>%
+      dplyr::ungroup()
   } else {
-    # no scale or rescale using log1p
-    data.plot$avg.exp.scaled <- log1p(data.plot$avg.exp)
+    # no scale, use log1p transformation
+    data.plot <- data.plot %>%
+      dplyr::mutate(avg.exp.scaled = log1p(avg.exp))
   }
 
   if (!is.null(markerGene)) {
     celltype_info <- markerGene
 
-    # add celltype
-    purrr::map_df(seq_len(nrow(data.plot)), function(x) {
-      tmp <- data.plot[x, ]
-      tmp$celltype <- celltype_info[which(celltype_info$gene == tmp$gene), aesGroName][[1]]
-      return(tmp)
-    }) -> data.plot.res
-
-    # arrange cell type
-    data.plot.res <- data.plot.res %>%
+    # add celltype and arrange
+    data.plot.res <- data.plot %>%
+      dplyr::left_join(
+        celltype_info %>% dplyr::select(gene, celltype = !!rlang::sym(aesGroName)),
+        by = "gene"
+      ) %>%
       dplyr::arrange(celltype)
   } else {
     data.plot.res <- data.plot
@@ -527,5 +542,5 @@ jjDotPlot <- function(
 #'
 #' @name top3pbmc.markers
 #' @docType data
-#' @author Junjun Lao
+#' @author mixfruit
 "top3pbmc.markers"

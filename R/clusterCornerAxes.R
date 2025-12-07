@@ -1,5 +1,5 @@
 #' @name clusterCornerAxes
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title Add corner axes on seurat UMAP/tSNE cluster figures
 #'
 #' @param object seurat object.

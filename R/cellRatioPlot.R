@@ -1,5 +1,5 @@
 #' @name cellRatioPlot
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title using cellRatioPlot to visualize cell percent ratio across clusters
 #'
 #' @param object object seurat object.

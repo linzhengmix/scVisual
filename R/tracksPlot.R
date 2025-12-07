@@ -1,5 +1,5 @@
 #' @name tracksPlot
-#' @author Jun Zhang
+#' @author mixfruit
 #' @title This function generates a track or heatmap plot based on the provided data.
 #'
 #' @param object An optional object containing the data.

@@ -1,10 +1,10 @@
 #' @name featurePlot
-#' @author Jun Zhang
+#' @author mixfruit
 #' @title  This function creates a scatter plot for multiple genes or features from a
 #' Seurat object.
 #'
 #' @param object A Seurat object containing the data.
-#' @param dim The dimension to use for plotting, default is "umap".
+#' @param reduction The dimension to use for plotting, default is "umap".
 #' @param genes A character vector of gene names or feature names to be plotted.
 #' @param nrow Number of rows in the plot grid.
 #' @param ncol Number of columns in the plot grid.
@@ -51,7 +51,7 @@ globalVariables(c("col_rg", "tmp_col"))
 
 featurePlot <- function(
     object = NULL,
-    dim = "umap",
+    reduction = "umap",
     genes = NULL,
     nrow = NULL,
     ncol = NULL,
@@ -75,7 +75,7 @@ featurePlot <- function(
   # 1_extract data
   # ============================================================================
   # make PC data
-  reduc <- data.frame(Seurat::Embeddings(object, reduction = dim))
+  reduc <- data.frame(Seurat::Embeddings(object, reduction = reduction))
 
   # metadata
   meta <- object@meta.data
@@ -187,19 +187,19 @@ featurePlot <- function(
               gp = grid::gpar(fill = "black")
             )
             grid::grid.text(
-              label = paste0(toupper(dim), " 1"), x = arrow.len / 2, y = -corLabel.dist,
-              gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
-            )
-            grid::grid.segments(
-              x0 = 0, x1 = 0, y0 = 0, y1 = arrow.len,
-              arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
-              gp = grid::gpar(fill = "black")
-            )
-            grid::grid.text(
-              label = paste0(toupper(dim), " 2"),
-              x = -corLabel.dist, y = arrow.len / 2, rot = 90,
-              gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
-            )
+            label = paste0(toupper(reduction), " 1"), x = arrow.len / 2, y = -corLabel.dist,
+            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+          )
+          grid::grid.segments(
+            x0 = 0, x1 = 0, y0 = 0, y1 = arrow.len,
+            arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+            gp = grid::gpar(fill = "black")
+          )
+          grid::grid.text(
+            label = paste0(toupper(reduction), " 2"),
+            x = -corLabel.dist, y = arrow.len / 2, rot = 90,
+            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+          )
           } else {
             grid::grid.rect()
           }
@@ -212,7 +212,7 @@ featurePlot <- function(
             gp = grid::gpar(fill = "black")
           )
           grid::grid.text(
-            label = paste0(toupper(dim), " 1"), x = arrow.len / 2, y = -corLabel.dist,
+            label = paste0(toupper(reduction), " 1"), x = arrow.len / 2, y = -corLabel.dist,
             gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
           )
           grid::grid.segments(
@@ -221,7 +221,7 @@ featurePlot <- function(
             gp = grid::gpar(fill = "black")
           )
           grid::grid.text(
-            label = paste0(toupper(dim), " 2"),
+            label = paste0(toupper(reduction), " 2"),
             x = -corLabel.dist, y = arrow.len / 2, rot = 90,
             gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
           )
@@ -264,8 +264,8 @@ featurePlot <- function(
           axis.label.x <- xlab
           axis.label.y <- ylab
         } else {
-          axis.label.x <- paste0(toupper(dim), " dimension 1")
-          axis.label.y <- paste0(toupper(dim), " dimension 2")
+          axis.label.x <- paste0(toupper(reduction), " dimension 1")
+          axis.label.y <- paste0(toupper(reduction), " dimension 2")
         }
 
         grid::grid.text(label = axis.label.x, x = 0.5, y = lab.shift)

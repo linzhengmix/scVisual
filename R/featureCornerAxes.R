@@ -1,5 +1,5 @@
 #' @name featureCornerAxes
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title Add corner axes on seurat UMAP/tSNE gene FeaturePlot function figures
 #'
 #' @param object object seurat object.

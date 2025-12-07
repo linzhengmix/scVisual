@@ -1,5 +1,5 @@
 #' @name jjVolcano
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title using jjVolcano to visualize marker genes
 #'
 #' @param diffData diff results with data.frame format, default NULL.
@@ -232,5 +232,5 @@ jjVolcano <- function(
 #'
 #' @name pbmc.markers
 #' @docType data
-#' @author Junjun Lao
+#' @author mixfruit
 "pbmc.markers"

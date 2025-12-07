@@ -7,7 +7,7 @@ Seurat object.}
 \arguments{
 \item{object}{A Seurat object containing the data.}
 
-\item{dim}{The dimension to use for plotting, default is "umap".}
+\item{reduction}{The dimension to use for plotting, default is "umap".}
 
 \item{genes}{A character vector of gene names or feature names to be plotted.}
 

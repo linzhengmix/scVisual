@@ -1,5 +1,5 @@
 #' @name markerVolcano
-#' @author Junjun Lao
+#' @author mixfruit
 #' @title Marker genes volcano plot
 #'
 #' @param markers Dataframe marker genes from findAllmarkers function from seurat.

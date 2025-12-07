@@ -1,5 +1,5 @@
 #' @name scatterCellPlot
-#' @author Jun Zhang
+#' @author mixfruit
 #' @title This function creates a scatter cell plot using the grid package in R.
 #'
 #' @param object A Seurat object containing the data.
