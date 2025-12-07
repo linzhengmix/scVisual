@@ -35,6 +35,14 @@ clusterCornerAxes(object = tmp,
                   aspect.ratio = 1,
                   relLength = 0.5)
 
+# retain only one axes
+clusterCornerAxes(object = tmp,
+                  reduction = 'umap',
+                  noSplit = F,
+                  groupFacet = 'orig.ident',
+                  aspect.ratio = 1,
+                  relLength = 0.5,
+                  axes = 'one')
 
 
 # 在调用函数前确保数据干净
@@ -83,14 +91,7 @@ clusterCornerAxes(object = tmp_clean,
                   relLength = 0.5,
                   axes = 'one')
 
-# retain only one axes
-clusterCornerAxes(object = tmp,
-                  reduction = 'umap',
-                  noSplit = F,
-                  groupFacet = 'orig.ident',
-                  aspect.ratio = 1,
-                  relLength = 0.5,
-                  axes = 'one')
+
 
 # 设定输出顺序
 tmp$orig.ident <- factor(tmp$orig.ident,
