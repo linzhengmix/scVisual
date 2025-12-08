@@ -1,3 +1,7 @@
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/linzhengmix/scVisual/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/linzhengmix/scVisual/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
+
 ## Installation
 
 ```R
