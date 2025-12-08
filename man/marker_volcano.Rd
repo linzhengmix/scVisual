@@ -48,6 +48,7 @@ Return a ggplot.
 Marker genes volcano plot
 }
 \examples{
+\dontrun{
 test <- system.file("extdata", "pbmc.markers.csv", package = "scVisual")
 markers <- read.csv(test)
 
@@ -56,6 +57,7 @@ marker_volcano(
   top_n = 5,
   label_col = ggsci::pal_npg()(9)
 )
+}
 }
 \author{
 mixfruit

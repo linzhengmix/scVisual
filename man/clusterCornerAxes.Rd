@@ -83,7 +83,7 @@ Return a ggplot object.
 Add corner axes on seurat UMAP/tSNE cluster figures
 }
 \examples{
-test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
+\dontrun{test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 
 tmp <- readRDS(test)
 
@@ -129,6 +129,7 @@ clusterCornerAxes(
   no_split = FALSE, group_facet = "orig.ident",
   rel_length = 0.5
 )
+}
 }
 \author{
 mixfruit

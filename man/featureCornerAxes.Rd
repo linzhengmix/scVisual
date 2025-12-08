@@ -57,6 +57,7 @@ Return a ggplot.
 Add corner axes on seurat UMAP/tSNE gene FeaturePlot function figures
 }
 \examples{
+\dontrun{
 
 test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 
@@ -89,6 +90,7 @@ featureCornerAxes(
   features = c("Actb", "Ythdc1", "Ythdf2")
 )
 
+}
 }
 \author{
 mixfruit
