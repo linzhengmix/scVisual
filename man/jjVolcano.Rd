@@ -28,7 +28,7 @@
 
 \item{base_size}{theme base size, default 14.}
 
-\item{tile_col}{cluster tile fill color, default jjAnno::useMyCol("paired",n = 9).}
+\item{tile_col}{cluster tile fill color, default useMyCol("paired",n = 9).}
 
 \item{...}{other arguments passed by "geom_text_repel".}
 

@@ -36,7 +36,7 @@ cellRatioPlot <- function(
 
   # color
   if (is.null(fill.col)) {
-    fill_col <- jjAnno::useMyCol(
+    fill_col <- useMyCol(
       "paired",
       n = length(unique(meta[, celltype.name]))
     )

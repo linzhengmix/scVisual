@@ -239,8 +239,8 @@ featurePlot <- function(
         if (rm_axis == FALSE) {
           # grid.xaxis()
           # grid.yaxis()
-          jjPlot::grid.xaxis2(label.space = 0.5)
-          jjPlot::grid.yaxis2(label.space = 0.25)
+          grid.xaxis2(label.space = 0.5)
+        grid.yaxis2(label.space = 0.25)
         }
       }
 
@@ -287,7 +287,7 @@ featurePlot <- function(
         # # grid.yaxis(main = FALSE)
         # jjPlot::grid.yaxis2(side = "right",tick.len = 0.25)
 
-        jjPlot::grid.colorkey(
+        grid.colorkey(
           x = tmp_data[, gene_matrix[i, j]],
           color = cols,
           pos = "v",

@@ -32,15 +32,11 @@ Imports:
     cowplot,
     ggalluvial,
     geomtextpath,
-    jjAnno,
-    jjPlot,
     ggunchull,
     ComplexHeatmap,
     stats,
     utils
 Remotes:
-  junjunlab/jjAnno,
-  junjunlab/jjPlot,
   sajuukLyu/ggunchull
 Suggests:
     ggsci,

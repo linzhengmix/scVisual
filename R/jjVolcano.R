@@ -14,7 +14,7 @@
 #' @param aes_col point mapping color, default c("#0099CC","#CC3333").
 #' @param legend_position legend position in plot, default c(0.7,0.9).
 #' @param base_size theme base size, default 14.
-#' @param tile_col cluster tile fill color, default jjAnno::useMyCol("paired",n = 9).
+#' @param tile_col cluster tile fill color, default useMyCol("paired",n = 9).
 #' @param ... other arguments passed by "geom_text_repel".
 #' @param cluster_order whether given your cluster orders, default NULL.
 #' @param polar whether make the plot to br polar, default FALSE.
@@ -45,7 +45,7 @@ jjVolcano <- function(
     aes_col = c("#0099CC", "#CC3333"),
     legend_position = c(0.7, 0.9),
     base_size = 14,
-    tile_col = jjAnno::useMyCol("paired", n = 9),
+    tile_col = useMyCol("paired", n = 9),
     cluster_order = NULL,
     polar = FALSE,
     expand = c(-1, 1),

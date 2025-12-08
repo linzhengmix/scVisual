@@ -92,8 +92,8 @@ scatter_cell_plot <- function(
   )
   grid::grid.rect()
   if (rm_axis == FALSE) {
-    jjPlot::grid.xaxis2(label.space = 0.5)
-    jjPlot::grid.yaxis2(label.space = 0.25)
+    grid.xaxis2(label.space = 0.5)
+    grid.yaxis2(label.space = 0.25)
   }
 
   celltype <- cell_num$idents
@@ -183,7 +183,7 @@ scatter_cell_plot <- function(
     )
 
     if (rm_axis == FALSE) {
-      jjPlot::grid.xaxis2(
+      grid.xaxis2(
         label.space = 0.5,
         at = c(0, max(cell_num$n)),
         labels = as.character(c(0, max(cell_num$n)))

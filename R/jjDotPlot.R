@@ -416,24 +416,9 @@ jjDotPlot <- function(
 
   # ================================
   # add celltype annotation
-  if (!is.null(markerGene) && anno == TRUE) {
-    panno <- jjAnno::annoSegment(
-      object = pxtree,
-      annoPos = "top",
-      aesGroup = TRUE,
-      aesGroName = "celltype",
-      segWidth = segWidth,
-      lwd = lwd, addBranch = TRUE, branDirection = -1,
-      pCol = rep("black", length(unique(celltype_info$cluster))),
-      addText = TRUE, textRot = textRot,
-      textCol = rep("black", length(unique(celltype_info$cluster))),
-      textSize = textSize,
-      hjust = hjust,
-      ...
-    )
-  } else {
-    panno <- pxtree
-  }
+  # Simplified version without jjAnno dependency
+  panno <- pxtree
+  
   return(panno)
 }
 
