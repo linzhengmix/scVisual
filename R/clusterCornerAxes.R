@@ -4,42 +4,42 @@
 #'
 #' @param object seurat object.
 #' @param reduction "string", reduction type (umap/tsne).
-#' @param groupFacet "string", give the column name in seurat metadata to facet plot.
-#' @param clusterCol "string", the point color to group by,cluster name, default "seurat_clusters".
-#' @param pSize "num", point size.
-#' @param aspect.ratio "num", plot width and height ratio, default NULL.
-#' @param noSplit "logic", whether to split/facet the plot, default "TRUE".
-#' @param nrow "num", rows to plot when noSplit = FALSE.
-#' @param relLength "num", the corner axis line relative length to plot axis(0-1).
-#' @param relDist "num" ,the relative distance of corner axis label to axis.
+#' @param group_facet "string", give the column name in seurat metadata to facet plot.
+#' @param cluster_col "string", the point color to group by,cluster name, default "seurat_clusters".
+#' @param p_size "num", point size.
+#' @param aspect_ratio "num", plot width and height ratio, default NULL.
+#' @param no_split "logic", whether to split/facet the plot, default "TRUE".
+#' @param nrow "num", rows to plot when no_split = FALSE.
+#' @param rel_length "num", the corner axis line relative length to plot axis(0-1).
+#' @param rel_dist "num" ,the relative distance of corner axis label to axis.
 #' @param axes "string", show multiple corner axis or only one (mul/one), default "mul".
-#' @param legendPos "string", legend position same as ggplot theme function, default "right".
-#' @param keySize The legned point size, default is 5.
-#' @param lineTextcol "string", corner line and label color, default "black".
-#' @param stripCol "string", facet background color, default "white".
-#' @param arrowType "string", arrow type (open/closed), default "closed".
-#' @param cornerTextSize "num", the corner label text size, default is 3.
+#' @param legend_pos "string", legend position same as ggplot theme function, default "right".
+#' @param key_size The legned point size, default is 5.
+#' @param line_text_col "string", corner line and label color, default "black".
+#' @param strip_col "string", facet background color, default "white".
+#' @param arrow_type "string", arrow type (open/closed), default "closed".
+#' @param corner_text_size "num", the corner label text size, default is 3.
 #' @param base_size "num", theme base size, default is 14.
-#' @param themebg Another theme style, default is "default", or "bwCorner".
-#' @param addCircle "logic", whether add circle on clusters, default is "FALSE".
-#' @param addCircle.legacy "logic", using the legacy version to add a circle, the parameters `nbin`, `nsm`, `addsm`, `sfac` and `qval` are only applicable to legacy, default is "FALSE".
-#' @param cicAlpha "num", circle fill color alpha, default is 0.1.
-#' @param cicDelta "num", the distance to extend the curve (circle), this parameter only takes effect when `addCircle.legacy = FALSE`.
-#' @param cicLineSize "num", circle line size, default is 1.
-#' @param cicLineColor "num", circle line color, default is "grey50".
-#' @param cicLineLty "num", circle line type, default is "dashed".
+#' @param theme_bg Another theme style, default is "default", or "bwCorner".
+#' @param add_circle "logic", whether add circle on clusters, default is "FALSE".
+#' @param add_circle_legacy "logic", using the legacy version to add a circle, the parameters `nbin`, `nsm`, `addsm`, `sfac` and `qval` are only applicable to legacy, default is "FALSE".
+#' @param cic_alpha "num", circle fill color alpha, default is 0.1.
+#' @param cic_delta "num", the distance to extend the curve (circle), this parameter only takes effect when `add_circle_legacy = FALSE`.
+#' @param cic_line_size "num", circle line size, default is 1.
+#' @param cic_line_color "num", circle line color, default is "grey50".
+#' @param cic_line_lty "num", circle line type, default is "dashed".
 #' @param nbin "num", number of points used to shape the hull, default 100.
 #' @param nsm "num", number of points used to perform convolution, should less than nbin, default 10.
 #' @param addsm "num", number of additional times of convolution performed, default 1.
 #' @param qval "num", expansion size factor, larger value means bigger hull, default 1.5.
 #' @param sfac "num", quantile of each sector, used to determine the edge of the hull, should less than 1, default 1.5.
 #'
-#' @param cellLabel Whether to label cell type on plot, default is FALSE.
-#' @param cellLabelSize Cell type label size, default is 6.
-#' @param cellLabelColor Cell type label color, default is "black".
-#' @param show.legend Whether show legend, default is TRUE.
+#' @param cell_label Whether to label cell type on plot, default is FALSE.
+#' @param cell_label_size Cell type label size, default is 6.
+#' @param cell_label_color Cell type label color, default is "black".
+#' @param show_legend Whether show legend, default is TRUE.
 #'
-#' @param cornerVariable Which group corner axis to be added when "axes" set to "one", default is the first level.
+#' @param corner_variable Which group corner axis to be added when "axes" set to "one", default is the first level.
 #'
 #' @importFrom ggunchull stat_unchull0
 #'
@@ -53,87 +53,87 @@
 #' # umap
 #' clusterCornerAxes(
 #'   object = tmp, reduction = "umap",
-#'   noSplit = TRUE
+#'   no_split = TRUE
 #' )
 #'
 #' # arrowType
 #' clusterCornerAxes(
 #'   object = tmp, reduction = "umap",
-#'   noSplit = TRUE, arrowType = "open"
+#'   no_split = TRUE, arrow_type = "open"
 #' )
 #'
 #' # facet by metadata column "orig.ident"
 #' clusterCornerAxes(
 #'   object = tmp, reduction = "umap",
-#'   noSplit = FALSE, groupFacet = "orig.ident",
-#'   relLength = 0.5
+#'   no_split = FALSE, group_facet = "orig.ident",
+#'   rel_length = 0.5
 #' )
 #'
 #' # retain only one axes with factor ordering
 #' tmp$orig.ident <- factor(tmp$orig.ident, levels = c("ST2", "ST3", "ST1", "ST4"))
 #' clusterCornerAxes(
 #'   object = tmp, reduction = "umap",
-#'   noSplit = FALSE, groupFacet = "orig.ident",
-#'   relLength = 0.5,
+#'   no_split = FALSE, group_facet = "orig.ident",
+#'   rel_length = 0.5,
 #'   axes = "one"
 #' )
 #'
 #' # line color
 #' clusterCornerAxes(
 #'   object = tmp, reduction = "umap",
-#'   noSplit = FALSE, groupFacet = "orig.ident",
-#'   relLength = 0.5,
-#'   lineTextcol = "grey50"
+#'   no_split = FALSE, group_facet = "orig.ident",
+#'   rel_length = 0.5,
+#'   line_text_col = "grey50"
 #' )
 #'
 #' # tsne
 #' clusterCornerAxes(
 #'   object = tmp, reduction = "tsne",
-#'   noSplit = FALSE, groupFacet = "orig.ident",
-#'   relLength = 0.5
+#'   no_split = FALSE, group_facet = "orig.ident",
+#'   rel_length = 0.5
 #' )
 
 # define variables
-globalVariables(c("x1", "y1", "linegrou", "angle", "lab", ".data"))
+globalVariables(c("x1", "y1", "linegrou", "angle", "lab", ".data", "corner_variable"))
 
 # define function
 clusterCornerAxes <- function(
     object = NULL,
     reduction = "umap",
-    groupFacet = NULL,  # ✅ 修复递归引用问题
-    clusterCol = "seurat_clusters",
-    pSize = 1,
-    aspect.ratio = NULL,
-    noSplit = TRUE,
+    group_facet = NULL,  # ✅ 修复递归引用问题
+    cluster_col = "seurat_clusters",
+    p_size = 1,
+    aspect_ratio = NULL,
+    no_split = TRUE,
     nrow = 1,
-    relLength = 0.25,
-    relDist = 0.1,
+    rel_length = 0.25,
+    rel_dist = 0.1,
     axes = "mul",
     show.legend = TRUE,
-    legendPos = "right",
-    keySize = 5,
-    cellLabel = FALSE,
-    cellLabelSize = 6,
-    cellLabelColor = "black",
-    lineTextcol = "black",
-    stripCol = "white",
-    arrowType = "closed",
-    cornerTextSize = 3,
+    legend_pos = "right",
+    key_size = 5,
+    cell_label = FALSE,
+    cell_label_size = 6,
+    cell_label_color = "black",
+    line_text_col = "black",
+    strip_col = "white",
+    arrow_type = "closed",
+    corner_text_size = 3,
     base_size = 14,
-    themebg = "default",
-    addCircle = FALSE,
-    addCircle.legacy = FALSE,
-    cicDelta,
-    cicAlpha = 0.1,
-    cicLineSize = 1,
-    cicLineColor = "grey50",
-    cicLineLty = "dashed",
+    theme_bg = "default",
+    add_circle = FALSE,
+    add_circle_legacy = FALSE,
+    cic_delta = 0.1,
+    cic_alpha = 0.1,
+    cic_line_size = 1,
+    cic_line_color = "grey50",
+    cic_line_lty = "dashed",
     nbin = 100,
     nsm = 10,
     addsm = 1,
     qval = 1,
     sfac = 1.5,
-    cornerVariable = NULL) {
+    corner_variable = NULL) {
 
   # make PC data
   reduc <- data.frame(Seurat::Embeddings(object, reduction = reduction))
@@ -145,17 +145,17 @@ clusterCornerAxes <- function(
   pc12 <- cbind(reduc, meta)
 
   # validate factor support
-  if (!is.null(groupFacet)) {
-    validate_factor_support(pc12, groupFacet, "clusterCornerAxes")
+  if (!is.null(group_facet)) {
+    validate_factor_support(pc12, group_facet, "clusterCornerAxes")
   }
 
   #######################################
   # text data
-  namePos <- pc12 %>%
-    dplyr::group_by(.data[[clusterCol]]) %>%
+  name_pos <- pc12 %>%
+    dplyr::group_by(.data[[cluster_col]]) %>%
     dplyr::summarise(
-      posMedia1 = stats::median(get(colnames(pc12)[1])),
-      posMedia2 = stats::median(get(colnames(pc12)[2]))
+      pos_media1 = stats::median(get(colnames(pc12)[1])),
+      pos_media2 = stats::median(get(colnames(pc12)[2]))
     )
 
   #######################################
@@ -164,16 +164,16 @@ clusterCornerAxes <- function(
   range <- floor(min(min(pc12[, 1]), min(pc12[, 2])))
 
   # get bottom-left coord
-  lower <- range - relDist * abs(range)
+  lower <- range - rel_dist * abs(range)
 
   # label reldist to axes
-  labelRel <- relDist * abs(lower)
+  label_rel <- rel_dist * abs(lower)
 
   # get relative line length
-  linelen <- abs(relLength * lower) + lower
+  line_len <- abs(rel_length * lower) + lower
 
   # mid point
-  mid <- abs(relLength * lower) / 2 + lower
+  mid <- abs(rel_length * lower) / 2 + lower
 
   # give reduction type
   if (startsWith(reduction, "umap")) {
@@ -186,51 +186,51 @@ clusterCornerAxes <- function(
 
   if (axes == "mul") {
     # axies data
-    axes <- data.frame(
-      "x1" = c(lower, lower, lower, linelen),
-      "y1" = c(lower, linelen, lower, lower),
-      "linegrou" = c(1, 1, 2, 2)
-    )
-    # axies label
-    label <- data.frame(
-      "lab" = c(axs_label),
-      "angle" = c(90, 0),
-      "x1" = c(lower - labelRel, mid),
-      "y1" = c(mid, lower - labelRel)
-    )
+  axes <- data.frame(
+    "x1" = c(lower, lower, lower, line_len),
+    "y1" = c(lower, line_len, lower, lower),
+    "linegrou" = c(1, 1, 2, 2)
+  )
+  # axies label
+  label <- data.frame(
+    "lab" = c(axs_label),
+    "angle" = c(90, 0),
+    "x1" = c(lower - label_rel, mid),
+    "y1" = c(mid, lower - label_rel)
+  )
   } else if (axes == "one") {
-    # improved factor support with cornerVariable option
-    if (!is.null(cornerVariable)) {
-      # use specified cornerVariable
-      if (is.factor(pc12[, groupFacet])) {
-        firstFacet <- factor(cornerVariable, levels = levels(pc12[, groupFacet]))
+    # improved factor support with corner_variable option
+    if (!is.null(corner_variable)) {
+      # use specified corner_variable
+      if (is.factor(pc12[, group_facet])) {
+        first_facet <- factor(corner_variable, levels = levels(pc12[, group_facet]))
       } else {
-        firstFacet <- cornerVariable
+        first_facet <- corner_variable
       }
     } else {
       # use first level maintaining factor order
-      firstFacet <- get_first_level(pc12[, groupFacet])
+      first_facet <- get_first_level(pc12[, group_facet])
     }
 
     # axies data
     axes <- data.frame(
-      "x1" = c(lower, lower, lower, linelen),
-      "y1" = c(lower, linelen, lower, lower),
+      "x1" = c(lower, lower, lower, line_len),
+      "y1" = c(lower, line_len, lower, lower),
       "linegrou" = c(1, 1, 2, 2),
-      "group" = rep(firstFacet, 2)
+      "group" = rep(first_facet, 2)
     )
     # axies label
     label <- data.frame(
       "lab" = c(axs_label),
       "angle" = c(90, 0),
-      "x1" = c(lower - labelRel, mid),
-      "y1" = c(mid, lower - labelRel),
-      "group" = rep(firstFacet, 2)
+      "x1" = c(lower - label_rel, mid),
+      "y1" = c(mid, lower - label_rel),
+      "group" = rep(first_facet, 2)
     )
 
     # rename group name
-    colnames(axes)[4] <- groupFacet
-    colnames(label)[5] <- groupFacet
+    colnames(axes)[4] <- group_facet
+    colnames(label)[5] <- group_facet
   } else {
     stop("Please give correct args (mul or one)!")
   }
@@ -242,16 +242,16 @@ clusterCornerAxes <- function(
     ggplot2::aes_string(x = colnames(pc12)[1], y = colnames(pc12)[2])
   ) +
     ggplot2::geom_point(
-      ggplot2::aes_string(color = clusterCol),
-      size = pSize,
+      ggplot2::aes_string(color = cluster_col),
+      size = p_size,
       show.legend = show.legend
     ) +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::labs(x = "", y = "") +
     ggplot2::theme(
-      strip.background = ggplot2::element_rect(colour = NA, fill = stripCol),
-      aspect.ratio = aspect.ratio,
-      legend.position = legendPos,
+      strip.background = ggplot2::element_rect(colour = NA, fill = strip_col),
+      aspect.ratio = aspect_ratio,
+      legend.position = legend_pos,
       plot.title = ggplot2::element_text(hjust = 0.5),
       axis.line = ggplot2::element_blank(),
       axis.ticks = ggplot2::element_blank(),
@@ -260,49 +260,49 @@ clusterCornerAxes <- function(
     ggplot2::geom_line(
       data = axes,
       ggplot2::aes(x = x1, y = y1, group = linegrou),
-      color = lineTextcol,
+      color = line_text_col,
       arrow = ggplot2::arrow(
         length = grid::unit(0.1, "inches"),
         ends = "last",
-        type = arrowType
+        type = arrow_type
       )
     ) +
     ggplot2::geom_text(
       data = label,
       ggplot2::aes(x = x1, y = y1, angle = angle, label = lab),
-      color = lineTextcol,
+      color = line_text_col,
       fontface = "italic",
-      size = cornerTextSize
+      size = corner_text_size
     ) +
-    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = keySize)))
+    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = key_size)))
 
   ######################################################
   # add text label
-  if (cellLabel == FALSE) {
+  if (cell_label == FALSE) {
     plabel <- p
   } else {
     plabel <- p +
       ggrepel::geom_text_repel(
-        data = namePos,
-        ggplot2::aes_string(x = "posMedia1", y = "posMedia2", label = clusterCol),
+        data = name_pos,
+        ggplot2::aes_string(x = "pos_media1", y = "pos_media2", label = cluster_col),
         show.legend = FALSE,
-        size = cellLabelSize,
-        color = cellLabelColor
+        size = cell_label_size,
+        color = cell_label_color
       )
   }
 
   ######################################################
   # add circle line
-  if (addCircle == FALSE) {
+  if (add_circle == FALSE) {
     p0 <- plabel
-  } else if (addCircle.legacy) {
+  } else if (add_circle_legacy) {
     p0 <- plabel +
       ggunchull::stat_unchull0(
-        ggplot2::aes_string(fill = clusterCol),
-        alpha = cicAlpha,
-        size = cicLineSize,
-        color = cicLineColor,
-        lty = cicLineLty,
+        ggplot2::aes_string(fill = cluster_col),
+        alpha = cic_alpha,
+        size = cic_line_size,
+        color = cic_line_color,
+        lty = cic_line_lty,
         show.legend = FALSE,
         nbin = nbin,
         nsm = nsm,
@@ -313,27 +313,27 @@ clusterCornerAxes <- function(
   } else {
     p0 <- plabel +
       ggunchull::stat_unchull(
-        ggplot2::aes_string(fill = clusterCol),
-        alpha = cicAlpha,
-        size = cicLineSize,
-        color = cicLineColor,
-        lty = cicLineLty,
+        ggplot2::aes_string(fill = cluster_col),
+        alpha = cic_alpha,
+        size = cic_line_size,
+        color = cic_line_color,
+        lty = cic_line_lty,
         show.legend = FALSE,
-        delta = cicDelta
+        delta = cic_delta
       )
   }
 
   ######################################################
   # facet plot
-  if (noSplit == TRUE) {
+  if (no_split == TRUE) {
     p1 <- p0
   } else {
-    p1 <- p0 + ggplot2::facet_wrap(ggplot2::vars(.data[[groupFacet]]), nrow = nrow)
+    p1 <- p0 + ggplot2::facet_wrap(ggplot2::vars(.data[[group_facet]]), nrow = nrow)
   }
 
   ######################################################
   # theme style
-  if (themebg == "bwCorner") {
+  if (theme_bg == "bwCorner") {
     p2 <- p1 +
       ggplot2::theme_bw(base_size = base_size) +
       ggplot2::theme(
@@ -341,9 +341,9 @@ clusterCornerAxes <- function(
         axis.text = ggplot2::element_blank(),
         axis.ticks = ggplot2::element_blank(),
         aspect.ratio = 1,
-        strip.background = ggplot2::element_rect(colour = NA, fill = stripCol)
+        strip.background = ggplot2::element_rect(colour = NA, fill = strip_col)
       )
-  } else if (themebg == "default") {
+  } else if (theme_bg == "default") {
     p2 <- p1
   }
 

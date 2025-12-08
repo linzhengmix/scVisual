@@ -10,13 +10,13 @@
 
 \item{features}{"string", the gene you want to plot.}
 
-\item{groupFacet}{"string", give the column name in seurat metadata to facet plot, if it is "NULL", facet plot only by gene.}
+\item{group_facet}{"string", give the column name in seurat metadata to facet plot, if it is "NULL", facet plot only by gene.}
 
-\item{relLength}{"num", the corner axis line relative length to plot axis(0-1).}
+\item{rel_length}{"num", the corner axis line relative length to plot axis(0-1).}
 
-\item{relDist}{"num", the relative distance of corner axis label to axis.}
+\item{rel_dist}{"num", the relative distance of corner axis label to axis.}
 
-\item{aspect.ratio}{"num", plot width and height ratio, default NULL.}
+\item{aspect_ratio}{"num", plot width and height ratio, default NULL.}
 
 \item{low}{"string", point color with low expression.}
 
@@ -24,31 +24,31 @@
 
 \item{axes}{"string", show multiple corner axis or only one (mul/one), default "mul".}
 
-\item{legendPos}{"string", legend position same as ggplot theme function, default "right".}
+\item{legend_pos}{"string", legend position same as ggplot theme function, default "right".}
 
-\item{stripCol}{"string", facet background color, defaults "white".}
+\item{strip_col}{"string", facet background color, defaults "white".}
 
-\item{pSize}{"num", point size.}
+\item{p_size}{"num", point size.}
 
-\item{arrowType}{"string", arrow type (open/closed), default "closed".}
+\item{arrow_type}{"string", arrow type (open/closed), default "closed".}
 
-\item{lineTextcol}{"string", facet background color, default "white".}
+\item{line_text_col}{"string", facet background color, default "white".}
 
-\item{cornerTextSize}{"num", the corner label text size, default is 5.}
+\item{corner_text_size}{"num", the corner label text size, default is 5.}
 
 \item{base_size}{"num", theme base size, default is 14.}
 
-\item{themebg}{Another theme style, default is "default", or "bwCorner".}
+\item{theme_bg}{Another theme style, default is "default", or "bwCorner".}
 
 \item{show.legend}{Whether show legend, default is "TRUE".}
 
 \item{cornerVariable}{Which group corner axis to be added when "axes" set to "one", default is the first group.}
 
-\item{nLayout}{= NULL Similar to the ncol/nrow for the layout, default is the gene numbers.}
+\item{n_layout}{= NULL Similar to the ncol/nrow for the layout, default is the gene numbers.}
 
-\item{minExp}{Minimum expression value defined, default is NULL.}
+\item{min_exp}{Minimum expression value defined, default is NULL.}
 
-\item{maxExp}{Maxmum expression value defined, default is NULL.}
+\item{max_exp}{Maxmum expression value defined, default is NULL.}
 }
 \value{
 Return a ggplot.
@@ -65,8 +65,8 @@ tmp <- readRDS(test)
 # umap
 featureCornerAxes(
   object = tmp, reduction = "umap",
-  groupFacet = "orig.ident",
-  relLength = 0.5, relDist = 0.2,
+  group_facet = "orig.ident",
+  rel_length = 0.5, rel_dist = 0.2,
   features = c("Actb", "Ythdc1", "Ythdf2")
 )
 
@@ -74,18 +74,18 @@ featureCornerAxes(
 tmp$orig.ident <- factor(tmp$orig.ident, levels = c("ST2", "ST3", "ST1", "ST4"))
 featureCornerAxes(
   object = tmp, reduction = "umap",
-  groupFacet = "orig.ident",
+  group_facet = "orig.ident",
   features = c("Actb", "Ythdc1", "Ythdf2"),
-  relLength = 0.5, relDist = 0.2,
+  rel_length = 0.5, rel_dist = 0.2,
   axes = "one",
-  lineTextcol = "grey50"
+  line_text_col = "grey50"
 )
 
 # tsne
 featureCornerAxes(
   object = tmp, reduction = "tsne",
-  groupFacet = "orig.ident",
-  relLength = 0.5, relDist = 0.2,
+  group_facet = "orig.ident",
+  rel_length = 0.5, rel_dist = 0.2,
   features = c("Actb", "Ythdc1", "Ythdf2")
 )
 

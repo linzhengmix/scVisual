@@ -10,16 +10,14 @@
 
 \item{markerGene}{Marker genes with cell type info.}
 
-\item{...}{Additional parameters.
-
-Create a dot plot of average expression and percent expressing
-across clusters or groups.}
+\item{...}{Additional parameters.}
 }
 \value{
 A ggplot object.
 }
 \description{
-Dot Plot for Gene Expression Visualization
+Create a dot plot of average expression and percent expressing
+across clusters or groups.
 }
 \author{
 mixfruit

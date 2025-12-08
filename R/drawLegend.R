@@ -4,7 +4,7 @@
 #'
 #' @param object object seurat object, default NULL.
 #' @param plot ggplot object, default NULL.
-#' @param cellType cell type column name, default NULL.
+#' @param cell_type cell type column name, default NULL.
 #' @param clusters cluster id column name, default NULL.
 #' @param ncol ncols to draw legend(1/2), default 1.
 #' @param col point color, default hue_pal().
@@ -14,49 +14,49 @@
 #' @return combine plot
 #' @export
 
-globalVariables(c("x", "y"))
+globalVariables(c("x", "y", "leg.data"))
 
 drawLegend <- function(
     object = NULL,
     plot = NULL,
-    cellType = NULL,
+    cell_type = NULL,
     clusters = NULL,
     ncol = 1,
     col = NULL,
     pt.size = 8,
     text.size = 4) {
   # prepare data
-  leg.data <- object@meta.data %>%
-    dplyr::select(.data[[cellType]], .data[[clusters]]) %>%
+  leg_data <- object@meta.data %>%
+    dplyr::select(.data[[cell_type]], .data[[clusters]]) %>%
     unique()
 
-  colnames(leg.data) <- c("cellType", "clusters")
+  colnames(leg_data) <- c("cell_type", "clusters")
 
   # reorder
-  leg.data$cellType <- factor(leg.data$cellType)
-  leg.data <- leg.data[match(levels(leg.data$cellType), leg.data$cellType), ]
+  leg_data$cell_type <- factor(leg_data$cell_type)
+  leg_data <- leg_data[match(levels(leg_data$cell_type), leg_data$cell_type), ]
 
   # add xy position
   if (ncol > 1) {
-    leg.data$x <- rep(
+    leg_data$x <- rep(
       1:ncol,
       c(
-        ceiling(nrow(leg.data) / ncol),
-        nrow(leg.data) - ceiling(nrow(leg.data) / ncol)
+        ceiling(nrow(leg_data) / ncol),
+        nrow(leg_data) - ceiling(nrow(leg_data) / ncol)
       )
     )
 
-    leg.data$y <- c(
-      1:ceiling(nrow(leg.data) / ncol),
-      1:(nrow(leg.data) - ceiling(nrow(leg.data) / ncol))
+    leg_data$y <- c(
+      1:ceiling(nrow(leg_data) / ncol),
+      1:(nrow(leg_data) - ceiling(nrow(leg_data) / ncol))
     )
   } else {
-    leg.data$x <- 1
-    leg.data$y <- seq_len(nrow(leg.data))
+    leg_data$x <- 1
+    leg_data$y <- seq_len(nrow(leg_data))
   }
 
   # order
-  leg.data$cellType <- factor(leg.data$cellType, levels = rev(levels(leg.data$cellType)))
+  leg_data$cell_type <- factor(leg_data$cell_type, levels = rev(levels(leg_data$cell_type)))
 
   # plot
   if (is.null(col)) {
@@ -65,15 +65,15 @@ drawLegend <- function(
     color <- rev(col)
   }
 
-  pleg <- ggplot2::ggplot(leg.data, ggplot2::aes(x = x, y = y)) +
+  pleg <- ggplot2::ggplot(leg_data, ggplot2::aes(x = x, y = y)) +
     ggplot2::geom_point(
-      ggplot2::aes(color = cellType),
+      ggplot2::aes(color = cell_type),
       show.legend = FALSE,
       size = pt.size
     ) +
     ggplot2::geom_text(ggplot2::aes(label = clusters)) +
     ggplot2::geom_text(
-      ggplot2::aes(label = cellType),
+      ggplot2::aes(label = cell_type),
       hjust = 0,
       nudge_x = 0.2,
       size = text.size

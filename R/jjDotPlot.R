@@ -6,16 +6,16 @@
 #' @param gene Genes to plot.
 #' @param markerGene Marker genes with cell type info.
 #' @param ... Additional parameters.
-#'
-#' Create a dot plot of average expression and percent expressing
-#' across clusters or groups.
 #' @return A ggplot object.
 #' @export
+#'
+#' @description Create a dot plot of average expression and percent expressing
+#' across clusters or groups.
 #'
 
 
 # Define global variables
-globalVariables(c("%||%", ".", "avg.exp", "avg.exp.scaled", "celltype", "group", "pct.exp", "unit"))
+globalVariables(c("%||%", ".", "avg_exp", "avg_exp_scaled", "celltype", "group", "pct_exp", "unit", "data.plot.res"))
 
 # Get PercentAbove function from Seurat
 PercentAbove <- utils::getFromNamespace("PercentAbove", "Seurat")
@@ -104,20 +104,18 @@ jjDotPlot <- function(
     stop(paste0("Column ", aesGroName, " not found in markerGene data frame."))
   }
   # set assays
-  if (is.null(assay)) {
-    assay <- Seurat::DefaultAssay(object = object)
-  }
+  assay <- assay %||% Seurat::DefaultAssay(object = object)
   Seurat::DefaultAssay(object = object) <- assay
 
   # get gene expression
-  if (is.null(gene) && !is.null(markerGene)) {
-    geneExp <- Seurat::FetchData(
+  gene_exp <- if (is.null(gene) && !is.null(markerGene)) {
+    Seurat::FetchData(
       object = object,
       vars = unique(markerGene$gene),
       slot = slot
     )
   } else if (!is.null(gene) && is.null(markerGene)) {
-    geneExp <- Seurat::FetchData(
+    Seurat::FetchData(
       object = object,
       vars = gene,
       slot = slot
@@ -129,94 +127,90 @@ jjDotPlot <- function(
   # get cluster number or celltype
   # whether split by groups
   if (is.null(split.by)) {
-    if (id %in% colnames(object@meta.data)) {
-      # using seurat_clusters or Idents
-      geneExp$id <- object@meta.data[[id]]
+    gene_exp$id <- if (id %in% colnames(object@meta.data)) {
+      object@meta.data[[id]]
     } else {
-      geneExp$id <- Seurat::Idents(object)
+      Seurat::Idents(object)
     }
   } else {
-    # using seurat_clusters or Idents
-    if (id %in% colnames(object@meta.data)) {
-      geneExp$id <- paste(object@meta.data[[id]],
-        " (", object@meta.data[[split.by]], ")",
-        sep = ""
-      )
+    id_values <- if (id %in% colnames(object@meta.data)) {
+      object@meta.data[[id]]
     } else {
-      geneExp$id <- paste(Seurat::Idents(object),
-        " (", object@meta.data[[split.by]], ")",
-        sep = ""
-      )
+      Seurat::Idents(object)
     }
+    gene_exp$id <- paste(id_values, " (", object@meta.data[[split.by]], ")", sep = "")
   }
 
   # calculate mean expressions and percent expression
-  data.plot <- geneExp %>%
+  data_plot <- gene_exp %>% 
     tidyr::pivot_longer(
       cols = -id,
       names_to = "gene",
       values_to = "expression"
-    ) %>%
-    dplyr::group_by(id, gene) %>%
+    ) %>% 
+    dplyr::group_by(id, gene) %>% 
     dplyr::summarise(
-      avg.exp = mean(expm1(expression)),
-      pct.exp = (sum(expression > 0) / dplyr::n()) * 100
-    ) %>%
+      avg_exp = mean(expm1(expression)),
+      pct_exp = (sum(expression > 0) / dplyr::n()) * 100
+    ) %>% 
     dplyr::ungroup()
 
   # scale mean expressions
-  if (scale == TRUE) {
-    data.plot <- data.plot %>%
-      dplyr::group_by(gene) %>%
+  data_plot <- if (scale == TRUE) {
+    data_plot %>% 
+      dplyr::group_by(gene) %>% 
       dplyr::mutate(
-        avg.exp.scaled = if (rescale == TRUE) {
-          scales::rescale(scale(avg.exp)[, 1], to = c(rescale.min, rescale.max))
+        avg_exp_scaled = if (rescale == TRUE) {
+          scales::rescale(scale(avg_exp)[, 1], to = c(rescale.min, rescale.max))
         } else {
-          Seurat::MinMax(scale(avg.exp)[, 1], min = col.min, max = col.max)
+          Seurat::MinMax(scale(avg_exp)[, 1], min = col.min, max = col.max)
         }
-      ) %>%
+      ) %>% 
       dplyr::ungroup()
   } else {
     # no scale, use log1p transformation
-    data.plot <- data.plot %>%
-      dplyr::mutate(avg.exp.scaled = log1p(avg.exp))
+    data_plot %>% 
+      dplyr::mutate(avg_exp_scaled = log1p(avg_exp))
   }
 
-  if (!is.null(markerGene)) {
+  # add celltype info if markerGene is provided
+  data_plot_res <- if (!is.null(markerGene)) {
     celltype_info <- markerGene
 
-    # add celltype and arrange
-    data.plot.res <- data.plot %>%
+    data_plot %>% 
       dplyr::left_join(
         celltype_info %>% dplyr::select(gene, celltype = !!rlang::sym(aesGroName)),
         by = "gene"
-      ) %>%
+      ) %>% 
       dplyr::arrange(celltype)
   } else {
-    data.plot.res <- data.plot
+    data_plot
   }
 
   # gene order
-  if (is.null(gene.order)) {
-    data.plot.res$gene <- factor(data.plot.res$gene, levels = unique(data.plot.res$gene))
-  } else {
-    data.plot.res$gene <- factor(data.plot.res$gene, levels = unique(gene.order))
-  }
+  data_plot_res$gene <- factor(
+    data_plot_res$gene,
+    levels = if (is.null(gene.order)) {
+      unique(data_plot_res$gene)
+    } else {
+      unique(gene.order)
+    }
+  )
 
   # cluster order
   if (!is.null(cluster.order)) {
-    data.plot.res$id <- factor(data.plot.res$id, levels = unique(cluster.order))
+    data_plot_res$id <- factor(data.plot.res$id, levels = unique(cluster.order))
   }
 
   # add group info
   if (!is.null(split.by)) {
-    data.plot.res$group <- sapply(strsplit(as.character(data.plot.res$id), split = "\\(|\\)"), "[", 2)
+    data_plot_res$group <- sapply(strsplit(as.character(data_plot_res$id), split = "\\(|\\)"), function(x) x[2])
   }
 
   # ============================================================================
   # plot
   pmain <- ggplot2::ggplot(
-    data.plot.res,
+    data_plot_res,
     ggplot2::aes(x = gene, y = id)
   ) +
     ggplot2::theme_bw(base_size = base_size) +
@@ -267,45 +261,40 @@ jjDotPlot <- function(
   )
 
   # change colors
-  if (is.null(split.by)) {
+  pmain <- if (is.null(split.by)) {
     if (length(dot.col) == 2) {
-      pmain <- pmain +
-        ggplot2::scale_fill_gradient(low = dot.col[1], high = dot.col[2])
+      pmain + ggplot2::scale_fill_gradient(low = dot.col[1], high = dot.col[2])
     } else {
-      pmain <- pmain +
-        ggplot2::scale_fill_gradient2(
+      pmain + ggplot2::scale_fill_gradient2(
+        low = dot.col[1],
+        mid = dot.col[2],
+        high = dot.col[3],
+        midpoint = midpoint
+      )
+    }
+  } else {
+    if (split.by.aesGroup == FALSE) {
+      pmain + ggplot2::scale_fill_manual(values = dot.col)
+    } else {
+      if (length(dot.col) == 2) {
+        pmain + ggplot2::scale_fill_gradient(low = dot.col[1], high = dot.col[2])
+      } else {
+        pmain + ggplot2::scale_fill_gradient2(
           low = dot.col[1],
           mid = dot.col[2],
           high = dot.col[3],
           midpoint = midpoint
         )
-    }
-  } else {
-    if (split.by.aesGroup == FALSE) {
-      pmain <- pmain +
-        ggplot2::scale_fill_manual(values = dot.col)
-    } else {
-      if (length(dot.col) == 2) {
-        pmain <- pmain +
-          ggplot2::scale_fill_gradient(low = dot.col[1], high = dot.col[2])
-      } else {
-        pmain <- pmain +
-          ggplot2::scale_fill_gradient2(
-            low = dot.col[1],
-            mid = dot.col[2],
-            high = dot.col[3],
-            midpoint = midpoint
-          )
       }
     }
   }
 
   # add point or tile layer
-  if (point.geom == TRUE) {
+  pmain <- if (point.geom == TRUE) {
     if (is.null(split.by)) {
-      pmain <- pmain +
+      pmain +
         ggplot2::geom_point(
-          ggplot2::aes(fill = avg.exp.scaled, size = pct.exp),
+          ggplot2::aes(fill = avg_exp_scaled, size = pct_exp),
           color = "black", shape = point.shape
         ) +
         colorbar.layer +
@@ -313,17 +302,17 @@ jjDotPlot <- function(
         ggplot2::scale_size(range = c(dot.min, dot.max))
     } else {
       if (split.by.aesGroup == FALSE) {
-        pmain <- pmain +
+        pmain +
           ggplot2::geom_point(
-            ggplot2::aes(fill = group, size = pct.exp),
+            ggplot2::aes(fill = group, size = pct_exp),
             color = "black", shape = point.shape
           ) +
           point.layer +
           ggplot2::scale_size(range = c(dot.min, dot.max))
       } else {
-        pmain <- pmain +
+        pmain +
           ggplot2::geom_point(
-            ggplot2::aes(fill = avg.exp.scaled, size = pct.exp),
+            ggplot2::aes(fill = avg_exp_scaled, size = pct_exp),
             color = "black", shape = point.shape
           ) +
           colorbar.layer +
@@ -333,98 +322,96 @@ jjDotPlot <- function(
     }
   } else if (tile.geom == TRUE) {
     if (is.null(split.by)) {
-      pmain <- pmain +
+      pmain +
         ggplot2::geom_tile(
-          ggplot2::aes(fill = avg.exp.scaled),
+          ggplot2::aes(fill = avg_exp_scaled),
           color = "black"
         ) +
         colorbar.layer
     } else {
       if (split.by.aesGroup == FALSE) {
-        pmain <- pmain +
+        pmain +
           ggplot2::geom_tile(
             ggplot2::aes(fill = group),
             color = "black"
           ) +
           colorbar.layer
       } else {
-        pmain <- pmain +
+        pmain +
           ggplot2::geom_tile(
-            ggplot2::aes(fill = avg.exp.scaled),
+            ggplot2::aes(fill = avg_exp_scaled),
             color = "black"
           ) +
           colorbar.layer
       }
     }
+  } else {
+    pmain
   }
 
   # long to wide matrix
-  plot.matrix <- data.plot.res %>%
-    tidyr::pivot_wider(names_from = gene, values_from = avg.exp.scaled, id_cols = id)
+  plot_matrix <- data_plot_res %>% 
+    tidyr::pivot_wider(names_from = gene, values_from = avg_exp_scaled, id_cols = id)
 
-  rownames(plot.matrix) <- plot.matrix$id
-  plot.matrix <- plot.matrix %>% dplyr::select(-id)
+  rownames(plot_matrix) <- plot_matrix$id
+  plot_matrix <- plot_matrix %>% dplyr::select(-id)
 
   # =======================================
   # define label position
-  if (is.null(tree.pos)) {
+  tree_pos <- if (is.null(tree.pos)) {
     if (ytree == TRUE && xtree == FALSE) {
-      tree.pos <- c("right", "right")
+      c("right", "right")
     } else if (xtree == TRUE && ytree == FALSE) {
-      tree.pos <- c("top", "top")
+      c("top", "top")
     } else {
-      tree.pos <- c("right", "top")
+      c("right", "top")
     }
   } else {
-    tree.pos <- tree.pos
+    tree.pos
   }
 
   # add ytree
-  if (ytree == TRUE) {
+  pytree <- if (ytree == TRUE) {
     # whether put label same with tree
     if (same.pos.label == FALSE) {
-      pytree <- pmain +
+      pmain +
         ggh4x::scale_y_dendrogram(
-          hclust = stats::hclust(stats::dist(plot.matrix)),
-          position = tree.pos[1],
+          hclust = stats::hclust(stats::dist(plot_matrix)),
+          position = tree_pos[1],
           labels = NULL
         ) +
-        ggplot2::guides(y.sec = ggh4x::guide_axis_manual(labels = function(x) {
-          x
-        }))
+        ggplot2::guides(y.sec = ggh4x::guide_axis_manual(labels = function(x) x))
     } else {
-      pytree <- pmain +
+      pmain +
         ggh4x::scale_y_dendrogram(
-          hclust = stats::hclust(stats::dist(plot.matrix)),
-          position = tree.pos[1]
+          hclust = stats::hclust(stats::dist(plot_matrix)),
+          position = tree_pos[1]
         )
     }
   } else {
-    pytree <- pmain
+    pmain
   }
 
   # add xtree
-  if (xtree == TRUE) {
+  pxtree <- if (xtree == TRUE) {
     # whether put label same with tree
     if (same.pos.label == FALSE) {
-      pxtree <- pytree +
+      pytree +
         ggh4x::scale_x_dendrogram(
-          hclust = stats::hclust(stats::dist(t(plot.matrix))),
-          position = tree.pos[2],
+          hclust = stats::hclust(stats::dist(t(plot_matrix))),
+          position = tree_pos[2],
           labels = NULL
         ) +
-        ggplot2::guides(x.sec = ggh4x::guide_axis_manual(labels = function(x) {
-          x
-        }))
+        ggplot2::guides(x.sec = ggh4x::guide_axis_manual(labels = function(x) x))
     } else {
-      pxtree <- pytree +
+      pytree +
         ggh4x::scale_x_dendrogram(
-          hclust = stats::hclust(stats::dist(t(plot.matrix))),
-          position = tree.pos[2]
+          hclust = stats::hclust(stats::dist(t(plot_matrix))),
+          position = tree_pos[2]
         )
     }
   } else {
-    pxtree <- pytree
+    pytree
   }
 
   # ================================

@@ -11,27 +11,27 @@
 #' @param quantile.val The quantile value to determine the color cutoff for each gene.
 #' @param color A vector of colors to be used for plotting, defaults to a
 #' predefined set of colors.
-#' @param rm.axis Logical value indicating whether to remove axis labels and ticks,
+#' @param rm_axis Logical value indicating whether to remove axis labels and ticks,
 #' defaults to FALSE.
-#' @param rm.legend Logical value indicating whether to remove the color legend,
+#' @param rm_legend Logical value indicating whether to remove the color legend,
 #' defaults to FALSE.
-#' @param add.rect Logical value indicating whether to add a rectangle around
+#' @param add_rect Logical value indicating whether to add a rectangle around
 #' each plot panel, defaults to FALSE.
-#' @param add.corArrow Logical value indicating whether to add arrows indicating
+#' @param add_cor_arrow Logical value indicating whether to add arrows indicating
 #' the correlation direction, defaults to FALSE.
-#' @param add.strip Logical value indicating whether to add a strip at the top of
+#' @param add_strip Logical value indicating whether to add a strip at the top of
 #' each plot panel, defaults to FALSE.
-#' @param corLabel.dist Distance between the corner arrows and the axis labels.
-#' @param arrow.len Length of the corner arrows.
-#' @param arrow.label.size Font size of the corner arrow labels.
-#' @param plot.size Size of each individual scatter plot.
-#' @param keep.oneCor Logical value indicating whether to keep only one set of
+#' @param cor_label_dist Distance between the corner arrows and the axis labels.
+#' @param arrow_len Length of the corner arrows.
+#' @param arrow_label_size Font size of the corner arrow labels.
+#' @param plot_size Size of each individual scatter plot.
+#' @param keep_one_cor Logical value indicating whether to keep only one set of
 #' corner arrows across the entire plot grid, defaults to FALSE.
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
 #' @param respect Logical value indicating whether to respect the specified number
 #' of rows and columns in the plot grid, defaults to TRUE.
-#' @param point.size the point size, default 1.
+#' @param point_size the point size, default 1.
 #'
 #' @examples
 #' \dontrun{
@@ -47,7 +47,7 @@
 #'
 #' @export
 
-globalVariables(c("col_rg", "tmp_col"))
+globalVariables(c("col_rg", "tmp_col", "tmp_color"))
 
 featurePlot <- function(
     object = NULL,
@@ -55,22 +55,22 @@ featurePlot <- function(
     genes = NULL,
     nrow = NULL,
     ncol = NULL,
-    quantile.val = 1,
+    quantile_val = 1,
     color = NULL,
-    rm.axis = FALSE,
-    rm.legend = FALSE,
-    add.rect = FALSE,
-    add.corArrow = FALSE,
-    add.strip = FALSE,
-    corLabel.dist = 0.08,
-    arrow.len = 0.2,
-    arrow.label.size = 6,
-    plot.size = 0.6,
-    keep.oneCor = FALSE,
+    rm_axis = FALSE,
+    rm_legend = FALSE,
+    add_rect = FALSE,
+    add_cor_arrow = FALSE,
+    add_strip = FALSE,
+    cor_label_dist = 0.08,
+    arrow_len = 0.2,
+    arrow_label_size = 6,
+    plot_size = 0.6,
+    keep_one_cor = FALSE,
     xlab = NULL,
     ylab = NULL,
     respect = TRUE,
-    point.size = 1) {
+    point_size = 1) {
   # ============================================================================
   # 1_extract data
   # ============================================================================
@@ -85,10 +85,10 @@ featurePlot <- function(
   pc12$idents <- Idents(object)
 
   # get gene expression
-  geneExp <- Seurat::FetchData(object = object, vars = genes)
+  gene_exp <- Seurat::FetchData(object = object, vars = genes)
 
   # cbind
-  mer <- cbind(pc12, geneExp)
+  mer <- cbind(pc12, gene_exp)
 
   # get nrow and ncol
   if (is.null(nrow)) {
@@ -99,10 +99,10 @@ featurePlot <- function(
     ncol <- ifelse(is.null(nrow), length(genes), ceiling(length(genes) / nrow))
   }
 
-  gene_mtx <- matrix(NA_character_, nrow = nrow, ncol = ncol)
+  gene_matrix <- matrix(NA_character_, nrow = nrow, ncol = ncol)
   len <- min(length(genes), nrow * ncol)
   if (len > 0) {
-    gene_mtx[seq_len(len)] <- genes[seq_len(len)]
+    gene_matrix[seq_len(len)] <- genes[seq_len(len)]
   }
 
   # assign colors
@@ -115,11 +115,10 @@ featurePlot <- function(
   # ============================================================================
   # 2_draw plot
   # ============================================================================
-  if (rm.axis == FALSE) {
-    lab.shift <- grid::unit(-2.5, "lines")
-  } else {
-    lab.shift <- grid::unit(-1, "lines")
-  }
+  lab_shift <- ifelse(rm_axis == FALSE, 
+    grid::unit(-2.5, "lines"), 
+    grid::unit(-1, "lines")
+  )
 
   # CANVAS FOR PLOT
   grid::grid.newpage()
@@ -145,85 +144,85 @@ featurePlot <- function(
       grid::pushViewport(
         grid::viewport(layout.pos.row = i, layout.pos.col = j)
       )
-      if (is.na(gene_mtx[i, j])) { grid::popViewport(); next }
+      if (is.na(gene_matrix[i, j])) { grid::popViewport(); next }
 
-      if (add.rect == TRUE) {
+      if (add_rect == TRUE) {
         grid::grid.rect()
       }
 
       # process data
-      quantile_val <- quantile(mer[, gene_mtx[i, j]], probs = quantile.val)
-      mer <- mer |>
-        dplyr::mutate(tmp_col = if_else(.data[[gene_mtx[i, j]]] > quantile_val,
-          quantile_val,
-          .data[[gene_mtx[i, j]]]
+      quantile_value <- quantile(mer[, gene_matrix[i, j]], probs = quantile_val)
+      mer <- mer |> 
+        dplyr::mutate(tmp_color = ifelse(.data[[gene_matrix[i, j]]] > quantile_value,
+          quantile_value,
+          .data[[gene_matrix[i, j]]]
         ))
 
-      tmp_data <- mer |>
-        dplyr::arrange(tmp_col)
-      col_p <- grDevices::colorRampPalette(cols)(100)
-      cut_range <- cut(tmp_data[, "tmp_col"], breaks = 100, include.lowest = TRUE)
+      tmp_data <- mer |> 
+        dplyr::arrange(tmp_color)
+      col_palette <- grDevices::colorRampPalette(cols)(100)
+      cut_range <- cut(tmp_data[, "tmp_color"], breaks = 100, include.lowest = TRUE)
       col_idx <- as.integer(cut_range)
-      tmp_data <- tmp_data |>
-        dplyr::mutate(col_f = col_p[col_idx])
+      tmp_data <- tmp_data |> 
+        dplyr::mutate(col_f = col_palette[col_idx])
 
       # ===========================================================
       # 2_scatter plot
       grid::pushViewport(
         grid::viewport(
-          x = 0.5, y = 0.5, width = plot.size, height = plot.size,
+          x = 0.5, y = 0.5, width = plot_size, height = plot_size,
           xscale = extendrange(range(tmp_data[, 1]), f = 0.05),
           yscale = extendrange(range(tmp_data[, 2]), f = 0.05)
         )
       )
 
       # whether add corner arrows
-      if (keep.oneCor == TRUE) {
+      if (keep_one_cor == TRUE) {
         if (j == 1) {
-          if (add.corArrow == TRUE) {
+          if (add_cor_arrow == TRUE) {
             grid::grid.segments(
-              x0 = 0, x1 = arrow.len, y0 = 0, y1 = 0,
+              x0 = 0, x1 = arrow_len, y0 = 0, y1 = 0,
               arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
               gp = grid::gpar(fill = "black")
             )
             grid::grid.text(
-            label = paste0(toupper(reduction), " 1"), x = arrow.len / 2, y = -corLabel.dist,
-            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
-          )
-          grid::grid.segments(
-            x0 = 0, x1 = 0, y0 = 0, y1 = arrow.len,
-            arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
-            gp = grid::gpar(fill = "black")
-          )
-          grid::grid.text(
-            label = paste0(toupper(reduction), " 2"),
-            x = -corLabel.dist, y = arrow.len / 2, rot = 90,
-            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
-          )
+              label = paste0(toupper(reduction), " 1"), x = arrow_len / 2, y = -cor_label_dist,
+              gp = grid::gpar(fontsize = arrow_label_size, fontface = "bold.italic")
+            )
+            grid::grid.segments(
+              x0 = 0, x1 = 0, y0 = 0, y1 = arrow_len,
+              arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
+              gp = grid::gpar(fill = "black")
+            )
+            grid::grid.text(
+              label = paste0(toupper(reduction), " 2"),
+              x = -cor_label_dist, y = arrow_len / 2, rot = 90,
+              gp = grid::gpar(fontsize = arrow_label_size, fontface = "bold.italic")
+            )
           } else {
             grid::grid.rect()
           }
         }
       } else {
-        if (add.corArrow == TRUE) {
+        if (add_cor_arrow == TRUE) {
           grid::grid.segments(
-            x0 = 0, x1 = arrow.len, y0 = 0, y1 = 0,
+            x0 = 0, x1 = arrow_len, y0 = 0, y1 = 0,
             arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
             gp = grid::gpar(fill = "black")
           )
           grid::grid.text(
-            label = paste0(toupper(reduction), " 1"), x = arrow.len / 2, y = -corLabel.dist,
-            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+            label = paste0(toupper(reduction), " 1"), x = arrow_len / 2, y = -cor_label_dist,
+            gp = grid::gpar(fontsize = arrow_label_size, fontface = "bold.italic")
           )
           grid::grid.segments(
-            x0 = 0, x1 = 0, y0 = 0, y1 = arrow.len,
+            x0 = 0, x1 = 0, y0 = 0, y1 = arrow_len,
             arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed"),
             gp = grid::gpar(fill = "black")
           )
           grid::grid.text(
             label = paste0(toupper(reduction), " 2"),
-            x = -corLabel.dist, y = arrow.len / 2, rot = 90,
-            gp = grid::gpar(fontsize = arrow.label.size, fontface = "bold.italic")
+            x = -cor_label_dist, y = arrow_len / 2, rot = 90,
+            gp = grid::gpar(fontsize = arrow_label_size, fontface = "bold.italic")
           )
         } else {
           grid::grid.rect()
@@ -231,13 +230,13 @@ featurePlot <- function(
       }
 
       grid::grid.points(
-        x = tmp_data[, 1], y = tmp_data[, 2], pch = 19, size = grid::unit(point.size, "pt"),
+        x = tmp_data[, 1], y = tmp_data[, 2], pch = 19, size = grid::unit(point_size, "pt"),
         gp = grid::gpar(col = tmp_data$col_f)
       )
 
       # whether draw axis
-      if (add.corArrow == FALSE) {
-        if (rm.axis == FALSE) {
+      if (add_cor_arrow == FALSE) {
+        if (rm_axis == FALSE) {
           # grid.xaxis()
           # grid.yaxis()
           jjPlot::grid.xaxis2(label.space = 0.5)
@@ -246,7 +245,7 @@ featurePlot <- function(
       }
 
       # add strip
-      if (add.strip == TRUE) {
+      if (add_strip == TRUE) {
         grid::grid.rect(
           x = 0.5, y = 1, width = 1,
           height = 0.15, gp = grid::gpar(fill = "grey85"),
@@ -255,46 +254,41 @@ featurePlot <- function(
       }
 
       grid::grid.text(
-        label = gene_mtx[i, j], x = 0.5, y = grid::unit(1 + 0.15 / 2, "npc"),
+        label = gene_matrix[i, j], x = 0.5, y = grid::unit(1 + 0.15 / 2, "npc"),
         gp = grid::gpar(fontface = "bold.italic")
       )
-      if (add.corArrow == FALSE) {
+      if (add_cor_arrow == FALSE) {
         # axis labels
-        if (!is.null(xlab) || !is.null(ylab)) {
-          axis.label.x <- xlab
-          axis.label.y <- ylab
-        } else {
-          axis.label.x <- paste0(toupper(reduction), " dimension 1")
-          axis.label.y <- paste0(toupper(reduction), " dimension 2")
-        }
+        axis_label_x <- ifelse(!is.null(xlab), xlab, paste0(toupper(reduction), " dimension 1"))
+        axis_label_y <- ifelse(!is.null(ylab), ylab, paste0(toupper(reduction), " dimension 2"))
 
-        grid::grid.text(label = axis.label.x, x = 0.5, y = lab.shift)
-        grid::grid.text(label = axis.label.y, x = lab.shift, y = 0.5, rot = 90)
+        grid::grid.text(label = axis_label_x, x = 0.5, y = lab_shift)
+        grid::grid.text(label = axis_label_y, x = lab_shift, y = 0.5, rot = 90)
       }
 
       grid::popViewport()
 
       # ===========================================================
       # 3_draw legend
-      if (rm.legend == FALSE) {
+      if (rm_legend == FALSE) {
         grid::pushViewport(
           grid::viewport(
-            x = 0.5 + plot.size / 2 + 0.01, y = 0.5,
-            width = 0.025, height = grid::unit(plot.size, "npc"),
+            x = 0.5 + plot_size / 2 + 0.01, y = 0.5,
+            width = 0.025, height = grid::unit(plot_size, "npc"),
             just = "left",
-            yscale = range(tmp_data[, gene_mtx[i, j]])
+            yscale = range(tmp_data[, gene_matrix[i, j]])
           )
         )
         # grid.rect(x = 0.5, y = unit(seq(0.25,0.75, length = 100), "npc"),
         #           width = unit(1, "npc"), height = unit(0.5, "npc"),
         #           just = "centre",default.units = "npc",
-        #           gp = gpar(col = NA, fill = col_p))
+        #           gp = gpar(col = NA, fill = col_palette))
         # grid.rect(gp = gpar(fill = NA))
         # # grid.yaxis(main = FALSE)
         # jjPlot::grid.yaxis2(side = "right",tick.len = 0.25)
 
         jjPlot::grid.colorkey(
-          x = tmp_data[, gene_mtx[i, j]],
+          x = tmp_data[, gene_matrix[i, j]],
           color = cols,
           pos = "v",
           ticks.side = "right"

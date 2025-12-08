@@ -13,7 +13,9 @@
 #' @return a ggplot object.
 #' @export
 
+# define global variables
 globalVariables(c("n", "num"))
+
 cellRatioPlot <- function(
     object = NULL,
     sample.name = NULL,
@@ -21,29 +23,32 @@ cellRatioPlot <- function(
     col.width = 0.7,
     flow.alpha = 0.25,
     flow.curve = 0,
-    fill.col = NULL) {
+    fill.col = NULL
+) {
   # get metainfo
   meta <- object@meta.data
 
   # calculate percent ratio
-  ratio.info <- meta %>%
+  ratio_info <- meta %>%
     dplyr::group_by(.data[[sample.name]], .data[[celltype.name]]) %>%
     dplyr::summarise(num = n()) %>%
     dplyr::mutate(rel_num = num / sum(num))
 
   # color
   if (is.null(fill.col)) {
-    fill.col <- jjAnno::useMyCol("paired", n = length(unique(meta[, celltype.name])))
+    fill_col <- jjAnno::useMyCol(
+      "paired",
+      n = length(unique(meta[, celltype.name]))
+    )
   } else {
-    fill.col <- fill.col
+    fill_col <- fill.col
   }
 
   # plot
-  p <-
-    ggplot2::ggplot(
-      ratio.info,
-      ggplot2::aes_string(x = sample.name, y = "rel_num")
-    ) +
+  p <- ggplot2::ggplot(
+    ratio_info,
+    ggplot2::aes_string(x = sample.name, y = "rel_num")
+  ) +
     ggplot2::geom_col(
       ggplot2::aes_string(fill = celltype.name),
       width = col.width
@@ -62,7 +67,7 @@ cellRatioPlot <- function(
     ggplot2::coord_cartesian(expand = 0) +
     ggplot2::scale_y_continuous(labels = scales::label_percent()) +
     ggplot2::scale_fill_manual(
-      values = fill.col,
+      values = fill_col,
       name = "Cell Type"
     ) +
     ggplot2::theme(

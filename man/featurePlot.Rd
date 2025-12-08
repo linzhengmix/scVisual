@@ -20,30 +20,30 @@ Seurat object.}
 \item{color}{A vector of colors to be used for plotting, defaults to a
 predefined set of colors.}
 
-\item{rm.axis}{Logical value indicating whether to remove axis labels and ticks,
+\item{rm_axis}{Logical value indicating whether to remove axis labels and ticks,
 defaults to FALSE.}
 
-\item{rm.legend}{Logical value indicating whether to remove the color legend,
+\item{rm_legend}{Logical value indicating whether to remove the color legend,
 defaults to FALSE.}
 
-\item{add.rect}{Logical value indicating whether to add a rectangle around
+\item{add_rect}{Logical value indicating whether to add a rectangle around
 each plot panel, defaults to FALSE.}
 
-\item{add.corArrow}{Logical value indicating whether to add arrows indicating
+\item{add_cor_arrow}{Logical value indicating whether to add arrows indicating
 the correlation direction, defaults to FALSE.}
 
-\item{add.strip}{Logical value indicating whether to add a strip at the top of
+\item{add_strip}{Logical value indicating whether to add a strip at the top of
 each plot panel, defaults to FALSE.}
 
-\item{corLabel.dist}{Distance between the corner arrows and the axis labels.}
+\item{cor_label_dist}{Distance between the corner arrows and the axis labels.}
 
-\item{arrow.len}{Length of the corner arrows.}
+\item{arrow_len}{Length of the corner arrows.}
 
-\item{arrow.label.size}{Font size of the corner arrow labels.}
+\item{arrow_label_size}{Font size of the corner arrow labels.}
 
-\item{plot.size}{Size of each individual scatter plot.}
+\item{plot_size}{Size of each individual scatter plot.}
 
-\item{keep.oneCor}{Logical value indicating whether to keep only one set of
+\item{keep_one_cor}{Logical value indicating whether to keep only one set of
 corner arrows across the entire plot grid, defaults to FALSE.}
 
 \item{xlab}{Label for the x-axis.}
@@ -53,7 +53,7 @@ corner arrows across the entire plot grid, defaults to FALSE.}
 \item{respect}{Logical value indicating whether to respect the specified number
 of rows and columns in the plot grid, defaults to TRUE.}
 
-\item{point.size}{the point size, default 1.}
+\item{point_size}{the point size, default 1.}
 }
 \description{
 This function creates a scatter plot for multiple genes or features from a

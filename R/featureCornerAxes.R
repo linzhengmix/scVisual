@@ -5,26 +5,26 @@
 #' @param object object seurat object.
 #' @param reduction "string", reduction type (umap/tsne).
 #' @param features "string", the gene you want to plot.
-#' @param groupFacet "string", give the column name in seurat metadata to facet plot, if it is "NULL", facet plot only by gene.
-#' @param relLength "num", the corner axis line relative length to plot axis(0-1).
-#' @param relDist "num", the relative distance of corner axis label to axis.
-#' @param aspect.ratio "num", plot width and height ratio, default NULL.
+#' @param group_facet "string", give the column name in seurat metadata to facet plot, if it is "NULL", facet plot only by gene.
+#' @param rel_length "num", the corner axis line relative length to plot axis(0-1).
+#' @param rel_dist "num", the relative distance of corner axis label to axis.
+#' @param aspect_ratio "num", plot width and height ratio, default NULL.
 #' @param low "string", point color with low expression.
 #' @param high "string", point color with high expression.
 #' @param axes "string", show multiple corner axis or only one (mul/one), default "mul".
-#' @param legendPos "string", legend position same as ggplot theme function, default "right".
-#' @param stripCol "string", facet background color, defaults "white".
-#' @param pSize "num", point size.
-#' @param arrowType "string", arrow type (open/closed), default "closed".
-#' @param lineTextcol "string", facet background color, default "white".
-#' @param cornerTextSize "num", the corner label text size, default is 5.
+#' @param legend_pos "string", legend position same as ggplot theme function, default "right".
+#' @param strip_col "string", facet background color, defaults "white".
+#' @param p_size "num", point size.
+#' @param arrow_type "string", arrow type (open/closed), default "closed".
+#' @param line_text_col "string", facet background color, default "white".
+#' @param corner_text_size "num", the corner label text size, default is 5.
 #' @param base_size "num", theme base size, default is 14.
-#' @param themebg Another theme style, default is "default", or "bwCorner".
+#' @param theme_bg Another theme style, default is "default", or "bwCorner".
 #' @param show.legend Whether show legend, default is "TRUE".
 #' @param cornerVariable Which group corner axis to be added when "axes" set to "one", default is the first group.
-#' @param nLayout = NULL Similar to the ncol/nrow for the layout, default is the gene numbers.
-#' @param minExp Minimum expression value defined, default is NULL.
-#' @param maxExp Maxmum expression value defined, default is NULL.
+#' @param n_layout = NULL Similar to the ncol/nrow for the layout, default is the gene numbers.
+#' @param min_exp Minimum expression value defined, default is NULL.
+#' @param max_exp Maxmum expression value defined, default is NULL.
 #' @return Return a ggplot.
 #' @export
 #' @examples
@@ -36,8 +36,8 @@
 #' # umap
 #' featureCornerAxes(
 #'   object = tmp, reduction = "umap",
-#'   groupFacet = "orig.ident",
-#'   relLength = 0.5, relDist = 0.2,
+#'   group_facet = "orig.ident",
+#'   rel_length = 0.5, rel_dist = 0.2,
 #'   features = c("Actb", "Ythdc1", "Ythdf2")
 #' )
 #'
@@ -45,23 +45,31 @@
 #' tmp$orig.ident <- factor(tmp$orig.ident, levels = c("ST2", "ST3", "ST1", "ST4"))
 #' featureCornerAxes(
 #'   object = tmp, reduction = "umap",
-#'   groupFacet = "orig.ident",
+#'   group_facet = "orig.ident",
 #'   features = c("Actb", "Ythdc1", "Ythdf2"),
-#'   relLength = 0.5, relDist = 0.2,
+#'   rel_length = 0.5, rel_dist = 0.2,
 #'   axes = "one",
-#'   lineTextcol = "grey50"
+#'   line_text_col = "grey50"
 #' )
 #'
 #' # tsne
 #' featureCornerAxes(
 #'   object = tmp, reduction = "tsne",
-#'   groupFacet = "orig.ident",
-#'   relLength = 0.5, relDist = 0.2,
+#'   group_facet = "orig.ident",
+#'   rel_length = 0.5, rel_dist = 0.2,
 #'   features = c("Actb", "Ythdc1", "Ythdf2")
 #' )
 #'
 # define variables
 globalVariables(c("x1", "y1", "linegrou", "angle", "lab", "gene_name", "scaledValue"))
+# Helper function to get first level of a factor
+get_first_level <- function(x) {
+  if (is.factor(x)) {
+    levels(x)[1]
+  } else {
+    unique(x)[1]
+  }
+}
 
 # define function
 featureCornerAxes <- function(
@@ -73,21 +81,21 @@ featureCornerAxes <- function(
     maxExp = NULL,
     relLength = 0.25,
     relDist = 0.1,
-    aspect.ratio = NULL,
+    aspectRatio = NULL,
     low = "lightgrey",
     high = "red",
     axes = "mul",
-    show.legend = TRUE,
+    showLegend = TRUE,
     legendPos = "right",
     stripCol = "white",
     cornerVariable = NULL,
     nLayout = NULL,
     pSize = 1,
     arrowType = "closed",
-    lineTextcol = "black",
+    lineTextCol = "black",
     cornerTextSize = 3,
-    base_size = 14,
-    themebg = "default") {
+    baseSize = 14,
+    themeBg = "default") {
 
   # make PC data
   reduc <- data.frame(Seurat::Embeddings(object, reduction = reduction))
@@ -100,7 +108,10 @@ featureCornerAxes <- function(
 
   # validate factor support if groupFacet is provided
   if (!is.null(groupFacet) && groupFacet != "orig.ident") {
-    validate_factor_support(pc12, groupFacet, "featureCornerAxes")
+    # Check if groupFacet exists in metadata
+    if (!groupFacet %in% colnames(pc12)) {
+      stop(paste0("Column ", groupFacet, " not found in metadata"))
+    }
   }
 
   # get gene expression
@@ -131,62 +142,58 @@ featureCornerAxes <- function(
   labelRel <- relDist * abs(lower)
 
   # get relative line length
-  linelen <- abs(relLength * lower) + lower
+  lineLen <- abs(relLength * lower) + lower
 
   # mid point
   mid <- abs(relLength * lower) / 2 + lower
 
   # give reduction type
   if (startsWith(reduction, "umap")) {
-    axs_label <- paste("UMAP", 2:1, sep = "")
+    axsLabel <- paste("UMAP", 2:1, sep = "")
   } else if (startsWith(reduction, "tsne")) {
-    axs_label <- paste("t-SNE", 2:1, sep = "")
+    axsLabel <- paste("t-SNE", 2:1, sep = "")
   } else {
     stop("Please give correct type (umap or tsne)!")
   }
 
   if (axes == "mul") {
     # axises data
-    axes <- data.frame(
-      "x1" = c(lower, lower, lower, linelen),
-      "y1" = c(lower, linelen, lower, lower),
+    axesData <- data.frame(
+      "x1" = c(lower, lower, lower, lineLen),
+      "y1" = c(lower, lineLen, lower, lower),
       "linegrou" = c(1, 1, 2, 2)
     )
     # axises label
-    label <- data.frame(
-      "lab" = c(axs_label),
+    labelData <- data.frame(
+      "lab" = c(axsLabel),
       "angle" = c(90, 0),
       "x1" = c(lower - labelRel, mid),
       "y1" = c(mid, lower - labelRel)
     )
   } else if (axes == "one") {
     # improved factor support with cleaner logic
-    if (!is.null(cornerVariable)) {
+    firstFacet <- if (!is.null(cornerVariable)) {
       # use specified cornerVariable
-      if (!is.null(groupFacet) && is.factor(pc12[, groupFacet])) {
-        firstFacet <- factor(cornerVariable, levels = levels(pc12[, groupFacet]))
-      } else {
-        firstFacet <- cornerVariable
-      }
+      cornerVariable
     } else {
       # use first level maintaining factor order
       if (!is.null(groupFacet)) {
-        firstFacet <- get_first_level(pc12[, groupFacet])
+        get_first_level(pc12[[groupFacet]])
       } else {
-        firstFacet <- levels(megredf$gene_name)[1]  # fallback to first gene
+        unique(megredf$gene_name)[1]  # fallback to first gene
       }
     }
 
     # axises data
-    axes <- data.frame(
-      "x1" = c(lower, lower, lower, linelen),
-      "y1" = c(lower, linelen, lower, lower),
+    axesData <- data.frame(
+      "x1" = c(lower, lower, lower, lineLen),
+      "y1" = c(lower, lineLen, lower, lower),
       "linegrou" = c(1, 1, 2, 2),
       "group" = rep(firstFacet, 2)
     )
     # axises label
-    label <- data.frame(
-      "lab" = c(axs_label),
+    labelData <- data.frame(
+      "lab" = c(axsLabel),
       angle = c(90, 0),
       "x1" = c(lower - labelRel, mid),
       "y1" = c(mid, lower - labelRel),
@@ -195,8 +202,8 @@ featureCornerAxes <- function(
 
     # rename group name
     if (!is.null(groupFacet)) {
-      colnames(axes)[4] <- groupFacet
-      colnames(label)[5] <- groupFacet
+      colnames(axesData)[4] <- groupFacet
+      colnames(labelData)[5] <- groupFacet
     }
   } else {
     stop("Please give correct args (mul or one)!")
@@ -221,9 +228,9 @@ featureCornerAxes <- function(
     ggplot2::geom_point(
       ggplot2::aes(color = scaledValue),
       size = pSize,
-      show.legend = show.legend
+      show.legend = showLegend
     ) +
-    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme_classic(base_size = baseSize) +
     ggplot2::scale_color_gradient(
       name = "", low = low, high = high,
       limits = c(minexp, maxexp),
@@ -231,9 +238,9 @@ featureCornerAxes <- function(
     ) +
     ggplot2::labs(x = "", y = "") +
     ggplot2::geom_line(
-      data = axes,
+      data = axesData,
       ggplot2::aes(x = x1, y = y1, group = linegrou),
-      color = lineTextcol,
+      color = lineTextCol,
       arrow = ggplot2::arrow(
         length = grid::unit(0.1, "inches"),
         ends = "last",
@@ -241,17 +248,17 @@ featureCornerAxes <- function(
       )
     ) +
     ggplot2::geom_text(
-      data = label,
+      data = labelData,
       ggplot2::aes(x = x1, y = y1, angle = angle, label = lab),
       fontface = "italic",
-      color = lineTextcol,
+      color = lineTextCol,
       size = cornerTextSize
     ) +
     ggplot2::theme(
       strip.background = ggplot2::element_rect(colour = NA, fill = stripCol),
-      strip.text = ggplot2::element_text(size = base_size),
+      strip.text = ggplot2::element_text(size = baseSize),
       strip.text.y = ggplot2::element_text(angle = 0),
-      aspect.ratio = aspect.ratio,
+      aspect.ratio = aspectRatio,
       legend.position = legendPos,
       plot.title = ggplot2::element_text(hjust = 0.5),
       axis.line = ggplot2::element_blank(),
@@ -263,8 +270,6 @@ featureCornerAxes <- function(
   # plot layout
   if (is.null(nLayout)) {
     nLayout <- length(features)
-  } else {
-    nLayout <- nLayout
   }
 
   ######################################
@@ -279,9 +284,9 @@ featureCornerAxes <- function(
 
   ######################################
   # theme style
-  if (themebg == "bwCorner") {
+  if (themeBg == "bwCorner") {
     p2 <- p1 +
-      ggplot2::theme_bw(base_size = base_size) +
+      ggplot2::theme_bw(base_size = baseSize) +
       ggplot2::theme(
         panel.grid = ggplot2::element_blank(),
         axis.text = ggplot2::element_blank(),
@@ -289,7 +294,9 @@ featureCornerAxes <- function(
         aspect.ratio = 1,
         strip.background = ggplot2::element_rect(colour = NA, fill = stripCol)
       )
-  } else if (themebg == "default") {
+  } else if (themeBg == "default") {
+    p2 <- p1
+  } else {
     p2 <- p1
   }
 

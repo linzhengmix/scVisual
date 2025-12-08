@@ -8,7 +8,7 @@
 
 \item{plot}{ggplot object, default NULL.}
 
-\item{cellType}{cell type column name, default NULL.}
+\item{cell_type}{cell type column name, default NULL.}
 
 \item{clusters}{cluster id column name, default NULL.}
 

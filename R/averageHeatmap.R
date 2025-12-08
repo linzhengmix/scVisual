@@ -25,7 +25,6 @@
 #' @param width The heatmap body width. Default is "NULL".
 #' @param height The heatmap body height. Default is "NULL".
 #' @param cluster.order The cell clusters order. Default is "NULL".
-#'
 #' @param cluster_columns Whether cluster columns. Default is "FALSE".
 #' @param cluster_rows Whether cluster rows. Default is "FALSE".
 #' @param gene.order the gene orders for heatmap. Default is "NULL".
@@ -85,7 +84,8 @@ averageHeatmap <- function(
     cluster_columns = FALSE,
     cluster_rows = FALSE,
     gene.order = NULL,
-    ...) {
+    ...
+) {
   # Parameter validation
   if (is.null(object)) {
     stop("Please provide a valid Seurat object.")
@@ -107,7 +107,7 @@ averageHeatmap <- function(
     stop("annoCol must be TRUE or FALSE.")
   }
   
-  if (annoCol == TRUE && is.null(myanCol)) {
+  if (annoCol && is.null(myanCol)) {
     stop("Please provide custom annotation colors when annoCol is TRUE.")
   }
   
@@ -118,18 +118,36 @@ averageHeatmap <- function(
     # Check if markGenes are in markerGene
     invalid_genes <- setdiff(markGenes, markerGene)
     if (length(invalid_genes) > 0) {
-      warning(paste0("The following genes are not in markerGene: ", paste(invalid_genes, collapse = ", ")))
+      warning(
+        paste0(
+          "The following genes are not in markerGene: ",
+          paste(invalid_genes, collapse = ", ")
+        )
+      )
       markGenes <- intersect(markGenes, markerGene)
     }
   }
-  # get cells mean gene expression
-  # check Seurat version and use appropriate parameter name
+  
+  # Get cells mean gene expression
+  # Check Seurat version and use appropriate parameter name
   mean_gene_exp <- as.matrix(
     data.frame(
-      do.call(Seurat::AverageExpression, c(
-        list(object = object, features = markerGene, group.by = group.by, assays = assays),
-        if (utils::packageVersion("Seurat") > 4) list(layer = slot) else list(slot = slot)
-      ))
+      do.call(
+        Seurat::AverageExpression,
+        c(
+          list(
+            object = object,
+            features = markerGene,
+            group.by = group.by,
+            assays = assays
+          ),
+          if (utils::packageVersion("Seurat") > 4) {
+            list(layer = slot)
+          } else {
+            list(slot = slot)
+          }
+        )
+      )
     )
   )
 
@@ -145,7 +163,11 @@ averageHeatmap <- function(
   #   replacement = " ", name1
   # )
 
-  group_names <- if (group.by == "ident") levels(Seurat::Idents(object)) else levels(as.factor(object@meta.data[[group.by]]))
+  group_names <- if (group.by == "ident") {
+    levels(Seurat::Idents(object))
+  } else {
+    levels(as.factor(object@meta.data[[group.by]]))
+  }
   if (!is.null(group_names) && length(group_names) == ncol(mean_gene_exp)) {
     colnames(mean_gene_exp) <- group_names
   }
@@ -167,17 +189,15 @@ averageHeatmap <- function(
   col_fun <- circlize::colorRamp2(htRange, htCol)
 
   # anno color
-  if (annoCol == FALSE) {
+  if (!annoCol) {
     set.seed(colseed)
     anno_col <- circlize::rand_color(
       ncol(htdf),
       luminosity = annoColType,
       transparency = annoColTypeAlpha
     )
-  } else if (annoCol == TRUE) {
-    anno_col <- myanCol
   } else {
-    stop("annoCol must be TRUE or FALSE")
+    anno_col <- myanCol
   }
   names(anno_col) <- colnames(htdf)
 
@@ -190,22 +210,22 @@ averageHeatmap <- function(
   )
 
   # whether mark your genes on plot
-  if (!is.null(markGenes)) {
+  right_annotation <- if (!is.null(markGenes)) {
     # all genes
-    rowGene <- rownames(htdf)
+    row_gene <- rownames(htdf)
 
-    # tartget gene
-    annoGene <- markGenes
+    # target gene
+    anno_gene <- markGenes
 
     # get target gene index
-    index <- match(annoGene, rowGene)
+    index <- match(anno_gene, row_gene)
     index <- index[!is.na(index)]
 
     # some genes annotation
-    geneMark <- ComplexHeatmap::rowAnnotation(
+    ComplexHeatmap::rowAnnotation(
       gene = ComplexHeatmap::anno_mark(
         at = index,
-        labels = annoGene,
+        labels = anno_gene,
         labels_gp = grid::gpar(
           fontface = "italic",
           fontsize = fontsize
@@ -213,10 +233,8 @@ averageHeatmap <- function(
       ),
       ...
     )
-
-    right_annotation <- geneMark
   } else {
-    right_annotation <- NULL
+    NULL
   }
 
   # control heatmap width and height
