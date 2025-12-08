@@ -1,0 +1,25 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/averageHeatmap.html</loc></url>
+<url><loc>/reference/cellRatioPlot.html</loc></url>
+<url><loc>/reference/clusterCornerAxes.html</loc></url>
+<url><loc>/reference/drawLegend.html</loc></url>
+<url><loc>/reference/featureCornerAxes.html</loc></url>
+<url><loc>/reference/featurePlot.html</loc></url>
+<url><loc>/reference/get_first_level.html</loc></url>
+<url><loc>/reference/get_ordered_levels.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/jjDotPlot.html</loc></url>
+<url><loc>/reference/jjVolcano.html</loc></url>
+<url><loc>/reference/marker_volcano.html</loc></url>
+<url><loc>/reference/pbmc.markers.html</loc></url>
+<url><loc>/reference/pipe.html</loc></url>
+<url><loc>/reference/scatter_cell_plot.html</loc></url>
+<url><loc>/reference/top3pbmc.markers.html</loc></url>
+<url><loc>/reference/tracks_plot.html</loc></url>
+<url><loc>/reference/validate_factor_support.html</loc></url>
+</urlset>
+
