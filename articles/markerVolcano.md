@@ -1,0 +1,98 @@
+# markerVolcano: Volcano Plot for Marker Genes
+
+## Introduction
+
+The `markerVolcano` function creates volcano plots for visualizing
+marker genes identified from single-cell RNA-seq data. Volcano plots are
+useful for identifying genes that are differentially expressed between
+clusters, showing both statistical significance (p-value) and effect
+size (log2 fold change).
+
+## Usage
+
+``` r
+markerVolcano(
+  markers_df,
+  cluster,
+  logFC_cutoff = 0.25,
+  pval_cutoff = 0.05,
+  title = NULL
+)
+```
+
+## Arguments
+
+- `markers_df`: A data frame containing marker genes information with
+  columns: p_val, avg_log2FC, p_val_adj, cluster, gene
+- `cluster`: Character vector specifying which cluster to plot
+- `logFC_cutoff`: Log2 fold change cutoff for highlighting genes
+  (default: 0.25)
+- `pval_cutoff`: Adjusted p-value cutoff for highlighting genes
+  (default: 0.05)
+- `title`: Plot title (default: NULL)
+
+## Example
+
+### Using Built-in Data
+
+scVisual comes with built-in PBMC marker data that we can use for
+demonstration:
+
+``` r
+library(scVisual)
+data(pbmc.markers)
+
+# Create volcano plot for Naive CD4 T cluster
+markerVolcano(pbmc.markers, cluster = "Naive CD4 T")
+```
+
+### Customizing the Plot
+
+You can customize the volcano plot by adjusting the logFC and p-value
+cutoffs, and adding a custom title:
+
+``` r
+# Create volcano plot with custom cutoffs and title
+markerVolcano(
+  pbmc.markers,
+  cluster = "Naive CD4 T",
+  logFC_cutoff = 0.5,
+  pval_cutoff = 0.01,
+  title = "Naive CD4 T Marker Genes"
+)
+```
+
+### Plotting Multiple Clusters
+
+To plot multiple clusters, you can call the function multiple times or
+use facetting:
+
+``` r
+# Create volcano plots for multiple clusters
+markerVolcano(pbmc.markers, cluster = "Naive CD4 T")
+markerVolcano(pbmc.markers, cluster = "CD14+ Mono")
+```
+
+## Output
+
+The function returns a ggplot2 object, which you can further customize
+using ggplot2 functions:
+
+``` r
+# Create volcano plot and customize
+p <- markerVolcano(pbmc.markers, cluster = "Naive CD4 T")
+p + 
+  theme_bw() +
+  labs(subtitle = "Differentially Expressed Genes")
+```
+
+## Tips
+
+- Use `logFC_cutoff` to adjust the minimum fold change for highlighting
+  genes
+- Use `pval_cutoff` to adjust the significance threshold
+- The plot uses adjusted p-values (p_val_adj) for significance
+  determination
+- Genes above the horizontal line are statistically significant
+- Genes to the left and right of the vertical lines have fold changes
+  greater than the cutoff

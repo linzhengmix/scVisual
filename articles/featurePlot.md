@@ -1,0 +1,96 @@
+# featurePlot: Feature Expression Plot
+
+## Introduction
+
+The `featurePlot` function creates plots displaying feature expression
+across cells. This visualization is useful for examining the
+distribution of gene expression values within and across clusters.
+
+## Usage
+
+``` r
+featurePlot(
+  object,
+  features,
+  cols = c("lightgrey", "blue"),
+  reduction = "umap",
+  split.by = NULL,
+  ...
+)
+```
+
+## Arguments
+
+- `object`: A Seurat object containing gene expression data
+- `features`: A vector of feature names to plot
+- `cols`: A vector of colors for low and high expression values
+- `reduction`: Dimensionality reduction to use (default: “umap”)
+- `split.by`: Split the plot by a metadata field
+- `...`: Additional arguments passed to Seurat::FeaturePlot
+
+## Example
+
+### Using Built-in Data
+
+Let’s demonstrate `featurePlot` using example data:
+
+``` r
+library(scVisual)
+
+# Load Seurat object (example)
+# seurat_obj <- readRDS(system.file("extdata", "seuratTest.RDS", package = "scVisual"))
+
+# Create feature plot
+# featurePlot(seurat_obj, features = c("CD3E", "CD14"))
+```
+
+### Customizing the Plot
+
+You can customize the feature plot by adjusting color schemes, reduction
+methods, and splitting:
+
+``` r
+# Create customized feature plot
+# featurePlot(
+#   seurat_obj,
+#   features = c("CD3E", "CD14"),
+#   cols = c("white", "red"),
+#   reduction = "tsne",
+#   split.by = "orig.ident"
+# )
+```
+
+### Plotting Multiple Features
+
+You can plot multiple features simultaneously:
+
+``` r
+# Plot multiple features
+# featurePlot(
+#   seurat_obj,
+#   features = c("CD3E", "CD14", "MS4A1", "CD8A"),
+#   cols = c("lightgrey", "darkblue"),
+#   ncol = 2
+# )
+```
+
+## Output
+
+The function returns a ggplot2 object, which can be further customized
+using ggplot2 functions:
+
+``` r
+# Create feature plot and customize
+# p <- featurePlot(seurat_obj, features = "CD3E")
+# p + 
+#   theme_bw() +
+#   labs(title = "CD3E Expression")
+```
+
+## Tips
+
+- Use `cols` to adjust the color scheme for expression levels
+- Try different `reduction` methods (UMAP, t-SNE, PCA) to see different
+  perspectives
+- Use `split.by` to compare feature expression across different groups
+- Plot 1-4 features at a time for optimal readability

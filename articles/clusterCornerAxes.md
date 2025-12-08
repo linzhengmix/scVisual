@@ -1,0 +1,85 @@
+# clusterCornerAxes: Cluster Corner Axes Plot
+
+## Introduction
+
+The `clusterCornerAxes` function creates corner axes plots for
+visualizing cluster-level data. This specialized visualization displays
+summary statistics for each cluster along the corners of a plot,
+providing a compact way to compare clusters across multiple dimensions.
+
+## Usage
+
+``` r
+clusterCornerAxes(
+  data,
+  cluster_variable,
+  features,
+  color_by = NULL,
+  ...
+)
+```
+
+## Arguments
+
+- `data`: A data frame containing cluster-level data
+- `cluster_variable`: The name of the cluster variable
+- `features`: A vector of feature names to plot
+- `color_by`: Variable to color the plot by
+- `...`: Additional arguments passed to other methods
+
+## Example
+
+### Using Built-in Data
+
+Let’s demonstrate `clusterCornerAxes` using example data:
+
+``` r
+library(scVisual)
+data(pbmc.markers)
+
+# Prepare cluster-level data
+top_genes <- top3pbmc.markers$gene
+summary_data <- aggregate(
+  avg_log2FC ~ cluster, 
+  data = pbmc.markers[pbmc.markers$gene %in% top_genes, ],
+  FUN = mean
+)
+
+# Create cluster corner axes plot
+clusterCornerAxes(summary_data, cluster_variable = "cluster", features = "avg_log2FC")
+```
+
+### Customizing the Plot
+
+You can customize the cluster corner axes plot by adjusting colors and
+other visual properties:
+
+``` r
+# Create customized cluster corner axes plot
+clusterCornerAxes(
+  summary_data,
+  cluster_variable = "cluster",
+  features = "avg_log2FC",
+  color_by = "cluster"
+)
+```
+
+## Output
+
+The function returns a ggplot2 object, which can be further customized
+using ggplot2 functions:
+
+``` r
+# Create cluster corner axes plot and customize
+p <- clusterCornerAxes(summary_data, cluster_variable = "cluster", features = "avg_log2FC")
+p + 
+  theme_minimal() +
+  labs(title = "Cluster Average Expression")
+```
+
+## Tips
+
+- Use `clusterCornerAxes` to visualize summary statistics across
+  clusters
+- The function works best with a moderate number of clusters (5-15)
+- Adjust colors using `color_by` to enhance cluster differentiation

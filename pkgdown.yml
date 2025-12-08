@@ -1,5 +1,17 @@
 pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
-articles: {}
-last_built: 2025-12-08T07:35Z
+articles:
+  averageHeatmap: averageHeatmap.html
+  cellRatioPlot: cellRatioPlot.html
+  clusterCornerAxes: clusterCornerAxes.html
+  drawLegend: drawLegend.html
+  featureCornerAxes: featureCornerAxes.html
+  featurePlot: featurePlot.html
+  jjDotPlot: jjDotPlot.html
+  jjVolcano: jjVolcano.html
+  markerVolcano: markerVolcano.html
+  scatterCellPlot: scatterCellPlot.html
+  scVisual: scVisual.html
+  tracksPlot: tracksPlot.html
+last_built: 2025-12-08T07:55Z

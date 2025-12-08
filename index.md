@@ -20,8 +20,6 @@ library(scVisual)
 ## Example
 
 ``` r
-
-
 library(scVisual)
 
 # load test data
