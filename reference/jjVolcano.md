@@ -54,7 +54,7 @@ using jjVolcano to visualize marker genes
 
 - tile_col:
 
-  cluster tile fill color, default jjAnno::useMyCol("paired",n = 9).
+  cluster tile fill color, default useMyCol("paired",n = 9).
 
 - ...:
 

@@ -24,6 +24,9 @@
 <url><loc>/reference/featurePlot.html</loc></url>
 <url><loc>/reference/get_first_level.html</loc></url>
 <url><loc>/reference/get_ordered_levels.html</loc></url>
+<url><loc>/reference/grid.colorkey.html</loc></url>
+<url><loc>/reference/grid.xaxis2.html</loc></url>
+<url><loc>/reference/grid.yaxis2.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/jjDotPlot.html</loc></url>
 <url><loc>/reference/jjVolcano.html</loc></url>
@@ -33,6 +36,7 @@
 <url><loc>/reference/scatter_cell_plot.html</loc></url>
 <url><loc>/reference/top3pbmc.markers.html</loc></url>
 <url><loc>/reference/tracks_plot.html</loc></url>
+<url><loc>/reference/useMyCol.html</loc></url>
 <url><loc>/reference/validate_factor_support.html</loc></url>
 </urlset>
 

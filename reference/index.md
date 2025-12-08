@@ -14,6 +14,10 @@
   seurat UMAP/tSNE gene FeaturePlot function figures
 - [`featurePlot`](featurePlot.md) : This function creates a scatter plot
   for multiple genes or features from a Seurat object.
+- [`grid.colorkey()`](grid.colorkey.md) : Custom color key for grid
+  plots
+- [`grid.xaxis2()`](grid.xaxis2.md) : Custom x-axis for grid plots
+- [`grid.yaxis2()`](grid.yaxis2.md) : Custom y-axis for grid plots
 - [`jjDotPlot`](jjDotPlot.md) : Dot Plot for Gene Expression
   Visualization
 - [`jjVolcano`](jjVolcano.md) : using jjVolcano to visualize marker
@@ -28,3 +32,4 @@
   this package test data description
 - [`tracks_plot()`](tracks_plot.md) : Generate a track or heatmap plot
   based on the provided data
+- [`useMyCol()`](useMyCol.md) : Custom color palette function
