@@ -46,7 +46,7 @@
 #' @return Return a ggplot object.
 #' @export
 #' @examples
-#' test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
+#' \dontrun{test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 #'
 #' tmp <- readRDS(test)
 #'
@@ -92,6 +92,7 @@
 #'   no_split = FALSE, group_facet = "orig.ident",
 #'   rel_length = 0.5
 #' )
+#' }
 
 # define variables
 globalVariables(c("x1", "y1", "linegrou", "angle", "lab", ".data", "corner_variable"))

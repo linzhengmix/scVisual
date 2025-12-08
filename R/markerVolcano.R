@@ -28,6 +28,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' test <- system.file("extdata", "pbmc.markers.csv", package = "scVisual")
 #' markers <- read.csv(test)
 #'
@@ -36,6 +37,7 @@
 #'   top_n = 5,
 #'   label_col = ggsci::pal_npg()(9)
 #' )
+#' }
 # define variables
 utils::globalVariables(c("avg_log2FC", "cluster", "gene", "pct.1", "pct.2"))
 

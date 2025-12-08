@@ -28,6 +28,7 @@
 #' @return Return a ggplot.
 #' @export
 #' @examples
+#' \dontrun{
 #'
 #' test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 #'
@@ -60,6 +61,7 @@
 #'   features = c("Actb", "Ythdc1", "Ythdf2")
 #' )
 #'
+#' }
 # define variables
 globalVariables(c("x1", "y1", "linegrou", "angle", "lab", "gene_name", "scaledValue"))
 # Helper function to get first level of a factor
