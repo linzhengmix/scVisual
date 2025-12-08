@@ -1,6 +1,5 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/linzhengmix/scVisual/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/linzhengmix/scVisual/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/linzhengmix/scVisual/graph/badge.svg)](https://app.codecov.io/gh/linzhengmix/scVisual)
 <!-- badges: end -->
 
 ## Installation
