@@ -8,10 +8,6 @@
 ```R
 install.packages('devtools')
 
-devtools::install_github('junjunlab/jjAnno')
-
-devtools::install_github('junjunlab/jjPlot')
-
 devtools::install_github("jokergoo/ComplexHeatmap")
 
 devtools::install_github('linzhengmix/scVisual')
