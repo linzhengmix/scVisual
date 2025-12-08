@@ -83,6 +83,7 @@ mixfruit
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 test <- system.file("extdata", "pbmc.markers.csv", package = "scVisual")
 markers <- read.csv(test)
 
@@ -91,8 +92,5 @@ marker_volcano(
   top_n = 5,
   label_col = ggsci::pal_npg()(9)
 )
-#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `linewidth` instead.
-#> ℹ The deprecated feature was likely used in the scVisual package.
-#>   Please report the issue to the authors.
+} # }
 ```

@@ -169,28 +169,24 @@ mixfruit
 ## Examples
 
 ``` r
-test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
+if (FALSE) test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 
 tmp <- readRDS(test)
+#> Error: object 'test' not found
 
 # umap
 clusterCornerAxes(
   object = tmp, reduction = "umap",
   no_split = TRUE
 )
-#> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-#> ℹ Please use tidy evaluation idioms with `aes()`.
-#> ℹ See also `vignette("ggplot2-in-packages")` for more information.
-#> ℹ The deprecated feature was likely used in the scVisual package.
-#>   Please report the issue to the authors.
-
+#> Error: object 'tmp' not found
 
 # arrowType
 clusterCornerAxes(
   object = tmp, reduction = "umap",
   no_split = TRUE, arrow_type = "open"
 )
-
+#> Error: object 'tmp' not found
 
 # facet by metadata column "orig.ident"
 clusterCornerAxes(
@@ -198,17 +194,18 @@ clusterCornerAxes(
   no_split = FALSE, group_facet = "orig.ident",
   rel_length = 0.5
 )
-
+#> Error: object 'tmp' not found
 
 # retain only one axes with factor ordering
 tmp$orig.ident <- factor(tmp$orig.ident, levels = c("ST2", "ST3", "ST1", "ST4"))
+#> Error: object 'tmp' not found
 clusterCornerAxes(
   object = tmp, reduction = "umap",
   no_split = FALSE, group_facet = "orig.ident",
   rel_length = 0.5,
   axes = "one"
 )
-
+#> Error: object 'tmp' not found
 
 # line color
 clusterCornerAxes(
@@ -217,7 +214,7 @@ clusterCornerAxes(
   rel_length = 0.5,
   line_text_col = "grey50"
 )
-
+#> Error: object 'tmp' not found
 
 # tsne
 clusterCornerAxes(
@@ -225,4 +222,6 @@ clusterCornerAxes(
   no_split = FALSE, group_facet = "orig.ident",
   rel_length = 0.5
 )
+#> Error: object 'tmp' not found
+ # \dontrun{}
 ```

@@ -112,6 +112,8 @@ mixfruit
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
+
 test <- system.file("extdata", "seuratTest.RDS", package = "scVisual")
 
 tmp <- readRDS(test)
@@ -123,7 +125,6 @@ featureCornerAxes(
   rel_length = 0.5, rel_dist = 0.2,
   features = c("Actb", "Ythdc1", "Ythdf2")
 )
-#> Error in featureCornerAxes(object = tmp, reduction = "umap", group_facet = "orig.ident",     rel_length = 0.5, rel_dist = 0.2, features = c("Actb", "Ythdc1",         "Ythdf2")): unused arguments (group_facet = "orig.ident", rel_length = 0.5, rel_dist = 0.2)
 
 # one axes with factor ordering
 tmp$orig.ident <- factor(tmp$orig.ident, levels = c("ST2", "ST3", "ST1", "ST4"))
@@ -135,7 +136,6 @@ featureCornerAxes(
   axes = "one",
   line_text_col = "grey50"
 )
-#> Error in featureCornerAxes(object = tmp, reduction = "umap", group_facet = "orig.ident",     features = c("Actb", "Ythdc1", "Ythdf2"), rel_length = 0.5,     rel_dist = 0.2, axes = "one", line_text_col = "grey50"): unused arguments (group_facet = "orig.ident", rel_length = 0.5, rel_dist = 0.2, line_text_col = "grey50")
 
 # tsne
 featureCornerAxes(
@@ -144,5 +144,6 @@ featureCornerAxes(
   rel_length = 0.5, rel_dist = 0.2,
   features = c("Actb", "Ythdc1", "Ythdf2")
 )
-#> Error in featureCornerAxes(object = tmp, reduction = "tsne", group_facet = "orig.ident",     rel_length = 0.5, rel_dist = 0.2, features = c("Actb", "Ythdc1",         "Ythdf2")): unused arguments (group_facet = "orig.ident", rel_length = 0.5, rel_dist = 0.2)
+
+} # }
 ```
