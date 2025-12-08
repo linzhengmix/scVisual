@@ -38,5 +38,10 @@ Imports:
     ComplexHeatmap,
     stats,
     utils
+Remotes:
+    junjunlab/jjAnno,
+    junjunlab/jjPlot,
+    sajuukLyu/ggunchull
+    jokergoo/ComplexHeatmap
 Suggests:
     ggsci

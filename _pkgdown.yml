@@ -1,4 +1,8 @@
+toc:
+  enabled: false
+
 url: ~
 template:
   bootstrap: 5
+
 
