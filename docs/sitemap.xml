@@ -1,5 +1,18 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
+<url><loc>/articles/averageHeatmap.html</loc></url>
+<url><loc>/articles/cellRatioPlot.html</loc></url>
+<url><loc>/articles/clusterCornerAxes.html</loc></url>
+<url><loc>/articles/drawLegend.html</loc></url>
+<url><loc>/articles/featureCornerAxes.html</loc></url>
+<url><loc>/articles/featurePlot.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/jjDotPlot.html</loc></url>
+<url><loc>/articles/jjVolcano.html</loc></url>
+<url><loc>/articles/markerVolcano.html</loc></url>
+<url><loc>/articles/scatterCellPlot.html</loc></url>
+<url><loc>/articles/scVisual.html</loc></url>
+<url><loc>/articles/tracksPlot.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/LICENSE-text.html</loc></url>

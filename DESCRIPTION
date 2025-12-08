@@ -43,4 +43,7 @@ Remotes:
   junjunlab/jjPlot,
   sajuukLyu/ggunchull
 Suggests:
-    ggsci
+    ggsci,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

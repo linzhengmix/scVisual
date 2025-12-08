@@ -1,0 +1,99 @@
+---
+title: "scVisual: Single-cell Visualization Tools"
+author: "mixfruit"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{scVisual: Single-cell Visualization Tools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+scVisual is an R package providing various visualization tools for single-cell RNA-seq data analysis. It includes functions for creating volcano plots, dot plots, heatmaps, and other specialized visualizations for single-cell data.
+
+## Installation
+
+You can install scVisual from GitHub using:
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("sajuukLyu/scVisual")
+```
+
+## Data
+
+scVisual comes with two built-in datasets:
+
+1. `pbmc.markers`: Marker genes identified from PBMC dataset
+2. `top3pbmc.markers`: Top 3 marker genes per cluster from PBMC dataset
+
+Let's take a quick look at these datasets:
+
+```{r}
+library(scVisual)
+data(pbmc.markers)
+data(top3pbmc.markers)
+
+# Structure of pbmc.markers
+str(pbmc.markers, max.level = 1)
+
+# Structure of top3pbmc.markers
+str(top3pbmc.markers, max.level = 1)
+```
+
+## Available Functions
+
+scVisual provides the following visualization functions:
+
+1. `averageHeatmap`: Create average expression heatmap
+2. `cellRatioPlot`: Plot cell ratios across clusters
+3. `clusterCornerAxes`: Plot cluster data with corner axes
+4. `drawLegend`: Draw custom legends
+5. `featureCornerAxes`: Plot feature data with corner axes
+6. `featurePlot`: Plot feature expression
+7. `jjDotPlot`: Create dot plots
+8. `jjVolcano`: Create volcano plots
+9. `markerVolcano`: Create volcano plots for markers
+10. `scatterCellPlot`: Create scatter plots for cells
+11. `tracksPlot`: Create tracks plots
+
+## Getting Started
+
+To get started with scVisual, load the package and the built-in data:
+
+```{r}
+library(scVisual)
+data(pbmc.markers)
+data(top3pbmc.markers)
+```
+
+You can then use any of the visualization functions with your data. For example, to create a volcano plot:
+
+```{r, eval=FALSE}
+markerVolcano(pbmc.markers, cluster = "Naive CD4 T")
+```
+
+## Function Vignettes
+
+For detailed usage of each function, please refer to their respective vignettes:
+
+- [averageHeatmap](averageHeatmap.html)
+- [cellRatioPlot](cellRatioPlot.html)
+- [clusterCornerAxes](clusterCornerAxes.html)
+- [drawLegend](drawLegend.html)
+- [featureCornerAxes](featureCornerAxes.html)
+- [featurePlot](featurePlot.html)
+- [jjDotPlot](jjDotPlot.html)
+- [jjVolcano](jjVolcano.html)
+- [markerVolcano](markerVolcano.html)
+- [scatterCellPlot](scatterCellPlot.html)
+- [tracksPlot](tracksPlot.html)
