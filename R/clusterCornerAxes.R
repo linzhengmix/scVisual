@@ -187,13 +187,13 @@ clusterCornerAxes <- function(
 
   if (axes == "mul") {
     # axies data
-  axes <- data.frame(
+  axes_data <- data.frame(
     "x1" = c(lower, lower, lower, line_len),
     "y1" = c(lower, line_len, lower, lower),
     "linegrou" = c(1, 1, 2, 2)
   )
   # axies label
-  label <- data.frame(
+  label_data <- data.frame(
     "lab" = c(axs_label),
     "angle" = c(90, 0),
     "x1" = c(lower - label_rel, mid),
@@ -214,14 +214,14 @@ clusterCornerAxes <- function(
     }
 
     # axies data
-    axes <- data.frame(
+    axes_data <- data.frame(
       "x1" = c(lower, lower, lower, line_len),
       "y1" = c(lower, line_len, lower, lower),
       "linegrou" = c(1, 1, 2, 2),
       "group" = rep(first_facet, 2)
     )
     # axies label
-    label <- data.frame(
+    label_data <- data.frame(
       "lab" = c(axs_label),
       "angle" = c(90, 0),
       "x1" = c(lower - label_rel, mid),
@@ -230,8 +230,8 @@ clusterCornerAxes <- function(
     )
 
     # rename group name
-    colnames(axes)[4] <- group_facet
-    colnames(label)[5] <- group_facet
+    colnames(axes_data)[4] <- group_facet
+    colnames(label_data)[5] <- group_facet
   } else {
     stop("Please give correct args (mul or one)!")
   }
@@ -263,7 +263,7 @@ clusterCornerAxes <- function(
       axis.text = ggplot2::element_blank()
     ) +
     ggplot2::geom_line(
-      data = axes,
+      data = axes_data,
       ggplot2::aes(x = x1, y = y1, group = linegrou),
       color = line_text_col,
       arrow = ggplot2::arrow(
@@ -273,7 +273,7 @@ clusterCornerAxes <- function(
       )
     ) +
     ggplot2::geom_text(
-      data = label,
+      data = label_data,
       ggplot2::aes(x = x1, y = y1, angle = angle, label = lab),
       color = line_text_col,
       fontface = "italic",

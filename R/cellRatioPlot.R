@@ -47,17 +47,17 @@ cellRatioPlot <- function(
   # plot
   p <- ggplot2::ggplot(
     ratio_info,
-    ggplot2::aes_string(x = sample.name, y = "rel_num")
+    ggplot2::aes(x = .data[[sample.name]], y = rel_num)
   ) +
     ggplot2::geom_col(
-      ggplot2::aes_string(fill = celltype.name),
+      ggplot2::aes(fill = .data[[celltype.name]]),
       width = col.width
     ) +
     ggalluvial::geom_flow(
-      ggplot2::aes_string(
-        stratum = celltype.name,
-        alluvium = celltype.name,
-        fill = celltype.name
+      ggplot2::aes(
+        stratum = .data[[celltype.name]],
+        alluvium = .data[[celltype.name]],
+        fill = .data[[celltype.name]]
       ),
       width = 0.5,
       alpha = flow.alpha,
