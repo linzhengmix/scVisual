@@ -213,22 +213,53 @@ clusterCornerAxes <- function(
       first_facet <- get_first_level(pc12[, group_facet])
     }
 
-    # axies data
-    axes_data <- data.frame(
+    # Create base data frames
+    axes_base <- data.frame(
       "x1" = c(lower, lower, lower, line_len),
       "y1" = c(lower, line_len, lower, lower),
-      "linegrou" = c(1, 1, 2, 2),
-      "group" = rep(first_facet, 2)
+      "linegrou" = c(1, 1, 2, 2)
     )
-    # axies label
-    label_data <- data.frame(
+    
+    label_base <- data.frame(
       "lab" = c(axs_label),
       "angle" = c(90, 0),
       "x1" = c(lower - label_rel, mid),
-      "y1" = c(mid, lower - label_rel),
-      "group" = rep(first_facet, 2)
+      "y1" = c(mid, lower - label_rel)
     )
-
+    
+    # Create group column with exact same type as main data
+    main_group_col <- pc12[, group_facet]
+    main_group_type <- class(main_group_col)
+    
+    # Create group vector with same type as main data
+    group_vector <- rep(first_facet, nrow(axes_base))
+    
+    # Ensure group_vector has the exact same type as main data
+    if (is.factor(main_group_col)) {
+      group_vector <- factor(group_vector, levels = levels(main_group_col))
+    } else if (is.character(main_group_col)) {
+      group_vector <- as.character(group_vector)
+    } else if (is.numeric(main_group_col)) {
+      group_vector <- as.numeric(group_vector)
+    } else if (is.integer(main_group_col)) {
+      group_vector <- as.integer(group_vector)
+    }
+    
+    # Add group column to data frames
+    axes_data <- cbind(axes_base, group = group_vector)
+    label_data <- cbind(label_base, group = rep(first_facet, nrow(label_base)))
+    
+    # Ensure label_data group column has same type
+    if (is.factor(main_group_col)) {
+      label_data$group <- factor(label_data$group, levels = levels(main_group_col))
+    } else if (is.character(main_group_col)) {
+      label_data$group <- as.character(label_data$group)
+    } else if (is.numeric(main_group_col)) {
+      label_data$group <- as.numeric(label_data$group)
+    } else if (is.integer(main_group_col)) {
+      label_data$group <- as.integer(label_data$group)
+    }
+    
     # rename group name
     colnames(axes_data)[4] <- group_facet
     colnames(label_data)[5] <- group_facet
