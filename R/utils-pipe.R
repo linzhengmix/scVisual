@@ -34,7 +34,7 @@ get_ordered_levels <- function(x) {
 #' corner axes placement and other ordered operations.
 #' @param x A vector to process
 #' @return First level as factor if original was factor, otherwise unique value
-#' @keywords internal
+#' @export
 get_first_level <- function(x) {
   if (is.factor(x)) {
     factor(levels(x)[1], levels = levels(x))
@@ -49,7 +49,7 @@ get_first_level <- function(x) {
 #' @param data Data frame containing the column
 #' @param colname Name of the column to check
 #' @param context Context for the warning message
-#' @keywords internal
+#' @export
 validate_factor_support <- function(data, colname, context = "plotting") {
   if (!is.null(colname) && colname %in% colnames(data)) {
     if (!is.factor(data[[colname]])) {

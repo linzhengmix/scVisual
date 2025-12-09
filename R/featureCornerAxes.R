@@ -64,14 +64,6 @@
 #' }
 # define variables
 globalVariables(c("x1", "y1", "linegrou", "angle", "lab", "gene_name", "scaledValue"))
-# Helper function to get first level of a factor
-get_first_level <- function(x) {
-  if (is.factor(x)) {
-    levels(x)[1]
-  } else {
-    unique(x)[1]
-  }
-}
 
 # define function
 featureCornerAxes <- function(
