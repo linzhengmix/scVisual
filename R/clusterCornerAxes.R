@@ -238,12 +238,16 @@ clusterCornerAxes <- function(
 
   ######################################################
   # plot
+  # Get axis column names
+  x_col <- colnames(pc12)[1]
+  y_col <- colnames(pc12)[2]
+  
   p <- ggplot2::ggplot(
     pc12,
-    ggplot2::aes_string(x = colnames(pc12)[1], y = colnames(pc12)[2])
+    ggplot2::aes(x = .data[[x_col]], y = .data[[y_col]])
   ) +
     ggplot2::geom_point(
-      ggplot2::aes_string(color = cluster_col),
+      ggplot2::aes(color = .data[[cluster_col]]),
       size = p_size,
       show.legend = show.legend
     ) +
@@ -285,7 +289,7 @@ clusterCornerAxes <- function(
     plabel <- p +
       ggrepel::geom_text_repel(
         data = name_pos,
-        ggplot2::aes_string(x = "pos_media1", y = "pos_media2", label = cluster_col),
+        ggplot2::aes(x = pos_media1, y = pos_media2, label = .data[[cluster_col]]),
         show.legend = FALSE,
         size = cell_label_size,
         color = cell_label_color
@@ -299,7 +303,7 @@ clusterCornerAxes <- function(
   } else if (add_circle_legacy) {
     p0 <- plabel +
       ggunchull::stat_unchull0(
-        ggplot2::aes_string(fill = cluster_col),
+        ggplot2::aes(fill = .data[[cluster_col]]),
         alpha = cic_alpha,
         size = cic_line_size,
         color = cic_line_color,
@@ -314,7 +318,7 @@ clusterCornerAxes <- function(
   } else {
     p0 <- plabel +
       ggunchull::stat_unchull(
-        ggplot2::aes_string(fill = cluster_col),
+        ggplot2::aes(fill = .data[[cluster_col]]),
         alpha = cic_alpha,
         size = cic_line_size,
         color = cic_line_color,
