@@ -186,25 +186,55 @@ clusterCornerAxes <- function(
     stop("Please give correct type (umap or tsne)!")
   }
 
-  # Simplified solution: always show axes on all facets
-  # This avoids the complex data type and mapping issues
-  # Create basic axes data without group_facet column
-  axes_data <- data.frame(
-    "x1" = c(lower, lower, lower, line_len),
-    "y1" = c(lower, line_len, lower, lower),
-    "linegrou" = c(1, 1, 2, 2)
-  )
-  
-  # Create basic label data without group_facet column
-  label_data <- data.frame(
-    "lab" = c(axs_label),
-    "angle" = c(90, 0),
-    "x1" = c(lower - label_rel, mid),
-    "y1" = c(mid, lower - label_rel)
-  )
-  
-  # For backwards compatibility, ignore axes="one" and always show axes on all facets
-  # This is more reliable than trying to handle complex facet mapping issues
+  # Handle axes parameter differently based on value
+  if (axes == "one" && !no_split && !is.null(group_facet)) {
+    # For axes="one", only show axes on the first facet
+    # Get the first facet value
+    first_facet <- unique(pc12[, group_facet])[1]
+    
+    # Create axes data with only the first facet value
+    # We create exactly 4 rows (for the 4 axis lines) with the first facet value
+    axes_data <- data.frame(
+      "x1" = c(lower, lower, lower, line_len),
+      "y1" = c(lower, line_len, lower, lower),
+      "linegrou" = c(1, 1, 2, 2),
+      "tmp_facet" = rep(first_facet, 4)  # Temporary column name
+    )
+    
+    # Create label data with only the first facet value
+    # We create exactly 2 rows (for the 2 axis labels) with the first facet value
+    label_data <- data.frame(
+      "lab" = c(axs_label),
+      "angle" = c(90, 0),
+      "x1" = c(lower - label_rel, mid),
+      "y1" = c(mid, lower - label_rel),
+      "tmp_facet" = rep(first_facet, 2)  # Temporary column name
+    )
+    
+    # Rename the temporary facet column to match the actual group_facet name
+    colnames(axes_data)[4] <- group_facet
+    colnames(label_data)[5] <- group_facet
+    
+    # Ensure the facet column has the exact same class as in pc12
+    axes_data[, group_facet] <- as(axes_data[, group_facet], class(pc12[, group_facet]))
+    label_data[, group_facet] <- as(label_data[, group_facet], class(pc12[, group_facet]))
+    
+  } else {
+    # For axes="mul" or no faceting, show axes on all facets
+    # Create axes data without facet mapping (will be added automatically)
+    axes_data <- data.frame(
+      "x1" = c(lower, lower, lower, line_len),
+      "y1" = c(lower, line_len, lower, lower),
+      "linegrou" = c(1, 1, 2, 2)
+    )
+    
+    label_data <- data.frame(
+      "lab" = c(axs_label),
+      "angle" = c(90, 0),
+      "x1" = c(lower - label_rel, mid),
+      "y1" = c(mid, lower - label_rel)
+    )
+  }
 
   ######################################################
   # plot
