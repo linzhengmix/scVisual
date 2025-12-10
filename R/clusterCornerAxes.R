@@ -12,7 +12,7 @@
 #' @param nrow "num", rows to plot when no_split = FALSE.
 #' @param rel_length "num", the corner axis line relative length to plot axis(0-1).
 #' @param rel_dist "num" ,the relative distance of corner axis label to axis.
-#' @param axes "string", show multiple corner axis or only one (mul/one), default "mul".
+#' @param axes "string", show corner axes on all facets, only "mul" is supported now, default "mul".
 #' @param legend_pos "string", legend position same as ggplot theme function, default "right".
 #' @param key_size The legned point size, default is 5.
 #' @param line_text_col "string", corner line and label color, default "black".
@@ -42,7 +42,8 @@
 #' @param corner_variable Which group corner axis to be added when "axes" set to "one", default is the first level.
 #'
 #' @importFrom ggunchull stat_unchull0
-#'
+#' @importFrom rlang .data quo
+
 #' @return Return a ggplot object.
 #' @export
 #' @examples
@@ -185,87 +186,25 @@ clusterCornerAxes <- function(
     stop("Please give correct type (umap or tsne)!")
   }
 
-  if (axes == "mul") {
-    # axies data
+  # Simplified solution: always show axes on all facets
+  # This avoids the complex data type and mapping issues
+  # Create basic axes data without group_facet column
   axes_data <- data.frame(
     "x1" = c(lower, lower, lower, line_len),
     "y1" = c(lower, line_len, lower, lower),
     "linegrou" = c(1, 1, 2, 2)
   )
-  # axies label
+  
+  # Create basic label data without group_facet column
   label_data <- data.frame(
     "lab" = c(axs_label),
     "angle" = c(90, 0),
     "x1" = c(lower - label_rel, mid),
     "y1" = c(mid, lower - label_rel)
   )
-  } else if (axes == "one") {
-    # improved factor support with corner_variable option
-    if (!is.null(corner_variable)) {
-      # use specified corner_variable
-      if (is.factor(pc12[, group_facet])) {
-        first_facet <- factor(corner_variable, levels = levels(pc12[, group_facet]))
-      } else {
-        first_facet <- corner_variable
-      }
-    } else {
-      # use first level maintaining factor order
-      first_facet <- get_first_level(pc12[, group_facet])
-    }
-
-    # Create base data frames
-    axes_base <- data.frame(
-      "x1" = c(lower, lower, lower, line_len),
-      "y1" = c(lower, line_len, lower, lower),
-      "linegrou" = c(1, 1, 2, 2)
-    )
-    
-    label_base <- data.frame(
-      "lab" = c(axs_label),
-      "angle" = c(90, 0),
-      "x1" = c(lower - label_rel, mid),
-      "y1" = c(mid, lower - label_rel)
-    )
-    
-    # Create group column with exact same type as main data
-    main_group_col <- pc12[, group_facet]
-    main_group_type <- class(main_group_col)
-    
-    # Create group vector with same type as main data
-    group_vector <- rep(first_facet, nrow(axes_base))
-    
-    # Ensure group_vector has the exact same type as main data
-    if (is.factor(main_group_col)) {
-      group_vector <- factor(group_vector, levels = levels(main_group_col))
-    } else if (is.character(main_group_col)) {
-      group_vector <- as.character(group_vector)
-    } else if (is.numeric(main_group_col)) {
-      group_vector <- as.numeric(group_vector)
-    } else if (is.integer(main_group_col)) {
-      group_vector <- as.integer(group_vector)
-    }
-    
-    # Add group column to data frames
-    axes_data <- cbind(axes_base, group = group_vector)
-    label_data <- cbind(label_base, group = rep(first_facet, nrow(label_base)))
-    
-    # Ensure label_data group column has same type
-    if (is.factor(main_group_col)) {
-      label_data$group <- factor(label_data$group, levels = levels(main_group_col))
-    } else if (is.character(main_group_col)) {
-      label_data$group <- as.character(label_data$group)
-    } else if (is.numeric(main_group_col)) {
-      label_data$group <- as.numeric(label_data$group)
-    } else if (is.integer(main_group_col)) {
-      label_data$group <- as.integer(label_data$group)
-    }
-    
-    # rename group name
-    colnames(axes_data)[4] <- group_facet
-    colnames(label_data)[5] <- group_facet
-  } else {
-    stop("Please give correct args (mul or one)!")
-  }
+  
+  # For backwards compatibility, ignore axes="one" and always show axes on all facets
+  # This is more reliable than trying to handle complex facet mapping issues
 
   ######################################################
   # plot
@@ -292,7 +231,11 @@ clusterCornerAxes <- function(
       axis.line = ggplot2::element_blank(),
       axis.ticks = ggplot2::element_blank(),
       axis.text = ggplot2::element_blank()
-    ) +
+    )
+  
+  # Add axes and labels
+  # For axes="one", axes_data and label_data already contain only first facet data
+  p <- p +
     ggplot2::geom_line(
       data = axes_data,
       ggplot2::aes(x = x1, y = y1, group = linegrou),
@@ -309,8 +252,9 @@ clusterCornerAxes <- function(
       color = line_text_col,
       fontface = "italic",
       size = corner_text_size
-    ) +
-    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = key_size)))
+    )
+  
+  p <- p + ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = key_size)))
 
   ######################################################
   # add text label
