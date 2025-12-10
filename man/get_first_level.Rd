@@ -17,4 +17,3 @@ Get first level preserving factor order if factor,
 otherwise first unique value. This ensures consistent behavior for
 corner axes placement and other ordered operations.
 }
-\keyword{internal}

@@ -24,7 +24,7 @@
 
 \item{rel_dist}{"num" ,the relative distance of corner axis label to axis.}
 
-\item{axes}{"string", show multiple corner axis or only one (mul/one), default "mul".}
+\item{axes}{"string", show corner axes on all facets, only "mul" is supported now, default "mul".}
 
 \item{legend_pos}{"string", legend position same as ggplot theme function, default "right".}
 

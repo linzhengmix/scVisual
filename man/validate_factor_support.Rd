@@ -17,4 +17,3 @@ validate_factor_support(data, colname, context = "plotting")
 Check if a column is a factor and provide helpful warning
 if not, suggesting factor conversion for custom ordering.
 }
-\keyword{internal}
