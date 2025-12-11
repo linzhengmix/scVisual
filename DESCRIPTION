@@ -1,7 +1,7 @@
 Package: scVisual
 Type: Package
 Title: Single-cell Visualization Toolkit
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person(
       "Fruit", "Mix",
