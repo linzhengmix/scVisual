@@ -96,7 +96,7 @@
 #' }
 
 # define variables
-globalVariables(c("x1", "y1", "linegrou", "angle", "lab", ".data", "corner_variable"))
+globalVariables(c("x1", "y1", "linegrou", "angle", "lab", ".data", "corner_variable", "pos_media1", "pos_media2"))
 
 # define function
 clusterCornerAxes <- function(
@@ -189,35 +189,55 @@ clusterCornerAxes <- function(
   # Handle axes parameter differently based on value
   if (axes == "one" && !no_split && !is.null(group_facet)) {
     # For axes="one", only show axes on the first facet
-    # Get the first facet value
-    first_facet <- unique(pc12[, group_facet])[1]
     
     # Create axes data with only the first facet value
-    # We create exactly 4 rows (for the 4 axis lines) with the first facet value
-    axes_data <- data.frame(
-      "x1" = c(lower, lower, lower, line_len),
-      "y1" = c(lower, line_len, lower, lower),
-      "linegrou" = c(1, 1, 2, 2),
-      "tmp_facet" = rep(first_facet, 4)  # Temporary column name
-    )
-    
-    # Create label data with only the first facet value
-    # We create exactly 2 rows (for the 2 axis labels) with the first facet value
-    label_data <- data.frame(
-      "lab" = c(axs_label),
-      "angle" = c(90, 0),
-      "x1" = c(lower - label_rel, mid),
-      "y1" = c(mid, lower - label_rel),
-      "tmp_facet" = rep(first_facet, 2)  # Temporary column name
-    )
+    if (is.factor(pc12[, group_facet])) {
+      # If it's a factor, respect the factor levels
+      first_level <- levels(pc12[, group_facet])[1]
+      
+      # Create axes data with the first factor level, preserving factor class and levels
+      axes_data <- data.frame(
+        "x1" = c(lower, lower, lower, line_len),
+        "y1" = c(lower, line_len, lower, lower),
+        "linegrou" = c(1, 1, 2, 2),
+        "tmp_facet" = factor(rep(first_level, 4), 
+                             levels = levels(pc12[, group_facet]))  # Preserve original levels
+      )
+      
+      # Create label data with the first factor level, preserving factor class and levels
+      label_data <- data.frame(
+        "lab" = c(axs_label),
+        "angle" = c(90, 0),
+        "x1" = c(lower - label_rel, mid),
+        "y1" = c(mid, lower - label_rel),
+        "tmp_facet" = factor(rep(first_level, 2), 
+                             levels = levels(pc12[, group_facet]))  # Preserve original levels
+      )
+    } else {
+      # Otherwise, use the first unique value as character/numeric
+      first_val <- unique(pc12[, group_facet])[1]
+      
+      # Create axes data with the first value
+      axes_data <- data.frame(
+        "x1" = c(lower, lower, lower, line_len),
+        "y1" = c(lower, line_len, lower, lower),
+        "linegrou" = c(1, 1, 2, 2),
+        "tmp_facet" = rep(first_val, 4)
+      )
+      
+      # Create label data with the first value
+      label_data <- data.frame(
+        "lab" = c(axs_label),
+        "angle" = c(90, 0),
+        "x1" = c(lower - label_rel, mid),
+        "y1" = c(mid, lower - label_rel),
+        "tmp_facet" = rep(first_val, 2)
+      )
+    }
     
     # Rename the temporary facet column to match the actual group_facet name
     colnames(axes_data)[4] <- group_facet
     colnames(label_data)[5] <- group_facet
-    
-    # Ensure the facet column has the exact same class as in pc12
-    axes_data[, group_facet] <- as(axes_data[, group_facet], class(pc12[, group_facet]))
-    label_data[, group_facet] <- as(label_data[, group_facet], class(pc12[, group_facet]))
     
   } else {
     # For axes="mul" or no faceting, show axes on all facets

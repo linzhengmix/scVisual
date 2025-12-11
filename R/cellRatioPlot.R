@@ -14,7 +14,7 @@
 #' @export
 
 # define global variables
-globalVariables(c("n", "num"))
+globalVariables(c("n", "num", "rel_num"))
 
 cellRatioPlot <- function(
     object = NULL,
