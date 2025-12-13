@@ -183,7 +183,7 @@ featureCornerAxes <- function(
       "x1" = c(lower, lower, lower, lineLen),
       "y1" = c(lower, lineLen, lower, lower),
       "linegrou" = c(1, 1, 2, 2),
-      "group" = rep(firstFacet, 2)
+      "group" = rep(firstFacet, 4)
     )
     # axises label
     labelData <- data.frame(
