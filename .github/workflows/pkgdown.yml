@@ -50,7 +50,7 @@ jobs:
       - name: Build pkgdown site
         if: steps.version_check.outputs.MATCHED_VERSION == 'true'
         run: |
-          Rscript -e "pkgdown::build_site_github_pages(new_process = FALSE)"
+          Rscript -e "devtools::install(); pkgdown::build_site_github_pages(new_process = FALSE)"
 
       - name: Deploy to GitHub Pages
         if: steps.version_check.outputs.MATCHED_VERSION == 'true'
