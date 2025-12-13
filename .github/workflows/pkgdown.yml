@@ -41,6 +41,7 @@ jobs:
           extra-packages: |
             any::pkgdown
             any::rcmdcheck
+            any::devtools
           needs: website
 
       - name: Run R CMD check (optional but recommended)
