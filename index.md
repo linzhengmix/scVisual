@@ -3,10 +3,6 @@
 ``` r
 install.packages('devtools')
 
-devtools::install_github('junjunlab/jjAnno')
-
-devtools::install_github('junjunlab/jjPlot')
-
 devtools::install_github("jokergoo/ComplexHeatmap")
 
 devtools::install_github('linzhengmix/scVisual')
@@ -29,23 +25,23 @@ tmp <- readRDS(test)
 
 # umap
 clusterCornerAxes(object = tmp,reduction = 'umap',
-                  noSplit = T)
+                  no_split = T)
 
 # facet by metadata column "orig.ident"
 clusterCornerAxes(object = tmp,
                   reduction = 'umap',
-                  noSplit = F,
-                  groupFacet = 'orig.ident',
-                  aspect.ratio = 1,
-                  relLength = 0.5)
+                  no_split = F,
+                  group_facet = 'orig.ident',
+                  aspect_ratio = 1,
+                  rel_length = 0.5)
 
 # retain only one axes
 clusterCornerAxes(object = tmp,
                   reduction = 'umap',
-                  noSplit = F,
-                  groupFacet = 'orig.ident',
-                  aspect.ratio = 1,
-                  relLength = 0.5,
+                  no_split = F,
+                  group_facet = 'orig.ident',
+                  aspect_ratio = 1,
+                  rel_length = 0.5,
                   axes = 'one')
 
 
@@ -89,10 +85,10 @@ tmp_clean <- prepare_clean_data(tmp, "orig.ident")
 # 现在调用函数
 clusterCornerAxes(object = tmp_clean,
                   reduction = 'umap',
-                  noSplit = FALSE,
-                  groupFacet = 'orig.ident',
-                  aspect.ratio = 1,
-                  relLength = 0.5,
+                  no_split = F,
+                  group_facet = 'orig.ident',
+                  aspect_ratio = 1,
+                  rel_length = 0.5,
                   axes = 'one')
 
 
@@ -103,9 +99,9 @@ tmp$orig.ident <- factor(tmp$orig.ident,
 
 clusterCornerAxes(object = tmp,
                   reduction = 'umap',
-                  noSplit = F,
-                  groupFacet = 'orig.ident',
-                  aspect.ratio = 1,
-                  relLength = 0.5,
+                  no_split = F,
+                  group_facet = 'orig.ident',
+                  aspect_ratio = 1,
+                  rel_length = 0.5,
                   axes = 'one')
 ```

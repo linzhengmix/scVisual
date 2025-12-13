@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scVisual</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,7 @@
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="nav-link" href="https://github.com/linzhengmix/scVisual/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -42,7 +43,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Add corner axes on seurat UMAP/tSNE cluster figures</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/linzhengmix/scVisual/blob/main/R/clusterCornerAxes.R"><code>R/clusterCornerAxes.R</code></a></small>
       <div class="d-none name"><code>clusterCornerAxes.Rd</code></div>
     </div>
 
@@ -96,7 +97,7 @@
 
 
 <dt id="arg-axes">axes<a class="anchor" aria-label="anchor" href="#arg-axes"></a></dt>
-<dd><p>"string", show multiple corner axis or only one (mul/one), default "mul".</p></dd>
+<dd><p>"string", show corner axes on all facets, only "mul" is supported now, default "mul".</p></dd>
 
 
 <dt id="arg-legend-pos">legend_pos<a class="anchor" aria-label="anchor" href="#arg-legend-pos"></a></dt>

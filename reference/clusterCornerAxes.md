@@ -47,8 +47,8 @@ Add corner axes on seurat UMAP/tSNE cluster figures
 
 - axes:
 
-  "string", show multiple corner axis or only one (mul/one), default
-  "mul".
+  "string", show corner axes on all facets, only "mul" is supported now,
+  default "mul".
 
 - legend_pos:
 
